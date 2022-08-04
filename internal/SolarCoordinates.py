@@ -1,7 +1,7 @@
 import math
-from CalendricalHelper import julian_century
-from Astronomical import apparent_obliquity_of_the_ecliptic, apparent_solar_longitude, mean_obliquity_of_the_ecliptic, mean_sidereal_time, mean_solar_longitude, mean_lunar_longitude, ascending_lunar_node_longitude, nutation_in_longitude, nutation_in_obliquity
-from DoubleUtil import unwind_angle
+from internal.CalendricalHelper import julian_century
+from internal.Astronomical import apparent_obliquity_of_the_ecliptic, apparent_solar_longitude, mean_obliquity_of_the_ecliptic, mean_sidereal_time, mean_solar_longitude, mean_lunar_longitude, ascending_lunar_node_longitude, nutation_in_longitude, nutation_in_obliquity
+from internal.DoubleUtil import unwind_angle
 
 
 class SolarCoordinates:

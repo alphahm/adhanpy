@@ -1,4 +1,4 @@
-from DoubleUtil import closest_angle, unwind_angle, normalize_with_bound
+from internal.DoubleUtil import closest_angle, unwind_angle, normalize_with_bound
 import math
 
 def mean_solar_longitude(T):

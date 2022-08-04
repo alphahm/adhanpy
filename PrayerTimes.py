@@ -3,11 +3,11 @@ from zoneinfo import ZoneInfo
 import calendar
 from CalculationMethod import CalculationMethod
 from CalculationParameters import CalculationParameters
-from SolarTime import SolarTime
+from internal.SolarTime import SolarTime
 from Coordinates import Coordinates
-from TimeComponents import TimeComponents
-from DateComponents import DateComponents
-from CalendarUtil import rounded_minute
+from data.TimeComponents import TimeComponents
+from data.DateComponents import DateComponents
+from data.CalendarUtil import rounded_minute
 
 def days_since_solstice(day_of_year: int, year: int, latitude: float) -> int:
     northern_offset = 10
@@ -226,16 +226,21 @@ class PrayerTimes:
 
 if __name__ == "__main__":
     coordinates = Coordinates(51.49799827422162, -0.1358135027951458)
-    date_components = DateComponents(2022, 8, 3)
+
+    today = datetime.now()
+    date_components = DateComponents.from_utc(today)
 
     calculation_parameters = CalculationParameters()
     calculation_parameters.get_parameters_from_method(CalculationMethod.MOON_SIGHTING_COMMITTEE)
 
     prayer_times = PrayerTimes(coordinates, date_components, calculation_parameters)
 
-    print(f"Fajr: {prayer_times.fajr.astimezone(ZoneInfo('Europe/London')).strftime('%H:%M')}")
-    print(f"Sunrise: {prayer_times.sunrise.astimezone(ZoneInfo('Europe/London')).strftime('%H:%M')}")
-    print(f"Dhuhr: {prayer_times.dhuhr.astimezone(ZoneInfo('Europe/London')).strftime('%H:%M')}")
-    print(f"Asr: {prayer_times.asr.astimezone(ZoneInfo('Europe/London')).strftime('%H:%M')}")
-    print(f"Maghrib: {prayer_times.maghrib.astimezone(ZoneInfo('Europe/London')).strftime('%H:%M')}")
-    print(f"Isha: {prayer_times.isha.astimezone(ZoneInfo('Europe/London')).strftime('%H:%M')}")
+    london_zone = ZoneInfo('Europe/London')
+
+    print(f"Prayer times for today ({today.astimezone(london_zone).strftime('%A %d %B %Y')}):")
+    print(f"Fajr: {prayer_times.fajr.astimezone(london_zone).strftime('%H:%M')}")
+    print(f"Sunrise: {prayer_times.sunrise.astimezone(london_zone).strftime('%H:%M')}")
+    print(f"Dhuhr: {prayer_times.dhuhr.astimezone(london_zone).strftime('%H:%M')}")
+    print(f"Asr: {prayer_times.asr.astimezone(london_zone).strftime('%H:%M')}")
+    print(f"Maghrib: {prayer_times.maghrib.astimezone(london_zone).strftime('%H:%M')}")
+    print(f"Isha: {prayer_times.isha.astimezone(london_zone).strftime('%H:%M')}")

@@ -1,5 +1,5 @@
 from enum import Enum
-from ShadowLength import ShadowLength
+from internal.ShadowLength import ShadowLength
 
 
 class Madhab(Enum):

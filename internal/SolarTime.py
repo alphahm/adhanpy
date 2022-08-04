@@ -1,8 +1,8 @@
 import math
-from Astronomical import approximate_transit, corrected_hour_angle, corrected_transit
-from CalendricalHelper import julian_day
-from ShadowLength import ShadowLength
-from SolarCoordinates import SolarCoordinates
+from internal.Astronomical import approximate_transit, corrected_hour_angle, corrected_transit
+from internal.CalendricalHelper import julian_day
+from internal.ShadowLength import ShadowLength
+from internal.SolarCoordinates import SolarCoordinates
 
 
 class SolarTime:
