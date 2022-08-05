@@ -148,19 +148,23 @@ def corrected_hour_angle(m0, h0, coordinates, afterTransit, Θ0, α2, α1, α3, 
         math.sin(math.radians(coordinates.latitude)) * math.sin(math.radians(δ2))
     )
     term2 = math.cos(math.radians(coordinates.latitude)) * math.cos(math.radians(δ2))
-    H0 = math.degrees(math.acos(term1 / term2))
-    m = m0 + (H0 / 360) if afterTransit else m0 - (H0 / 360)
-    θ = unwind_angle(Θ0 + (360.985647 * m))
-    α = unwind_angle(interpolate_angles(α2, α1, α3, m))
-    δ = interpolate(δ2, δ1, δ3, m)
-    H = θ - Lw - α
-    h = altitudeOfCelestialBody(coordinates.latitude, δ, H)
-    term3 = h - h0
-    term4 = (
-        360
-        * math.cos(math.radians(δ))
-        * math.cos(math.radians(coordinates.latitude))
-        * math.sin(math.radians(H))
-    )
-    Δm = term3 / term4
+    try:
+        H0 = math.degrees(math.acos(term1 / term2))
+        m = m0 + (H0 / 360) if afterTransit else m0 - (H0 / 360)
+        θ = unwind_angle(Θ0 + (360.985647 * m))
+        α = unwind_angle(interpolate_angles(α2, α1, α3, m))
+        δ = interpolate(δ2, δ1, δ3, m)
+        H = θ - Lw - α
+        h = altitudeOfCelestialBody(coordinates.latitude, δ, H)
+        term3 = h - h0
+        term4 = (
+            360
+            * math.cos(math.radians(δ))
+            * math.cos(math.radians(coordinates.latitude))
+            * math.sin(math.radians(H))
+        )
+        Δm = term3 / term4
+    except:
+        return math.nan
+
     return (m + Δm) * 24

@@ -1,6 +1,7 @@
 from enum import Enum
 from adhanpy.internal.ShadowLength import ShadowLength
 
+
 class Madhab(Enum):
 
     SHAFI = 0

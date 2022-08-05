@@ -3,6 +3,7 @@ from zoneinfo import ZoneInfo
 import calendar
 from adhanpy.CalculationMethod import CalculationMethod
 from adhanpy.CalculationParameters import CalculationParameters
+from adhanpy.Prayer import Prayer
 from adhanpy.internal.SolarTime import SolarTime
 from adhanpy.Coordinates import Coordinates
 from adhanpy.data.TimeComponents import TimeComponents
@@ -205,7 +206,6 @@ class PrayerTimes:
             if temp_fajr is None or temp_fajr < safe_fajr:
                 temp_fajr = safe_fajr
 
-
             # Isha calculation with check against safe value
             try:
                 if calculation_parameters.isha_interval < 1:
@@ -303,6 +303,22 @@ class PrayerTimes:
                 (temp_isha + timedelta(minutes=calculation_parameters.adjustments.isha))
                 + timedelta(minutes=calculation_parameters.method_adjustments.isha)
             )
+
+    def time_for_prayer(self, prayer: Prayer):
+        if prayer == Prayer.FAJR:
+            return self.fajr
+        elif prayer == Prayer.SUNRISE:
+            return self.sunrise
+        elif prayer == Prayer.DHUHR:
+            return self.dhuhr
+        elif prayer == Prayer.ASR:
+            return self.asr
+        elif prayer == Prayer.MAGHRIB:
+            return self.maghrib
+        elif prayer == Prayer.ISHA:
+            return self.isha
+        else:
+            return None
 
 
 if __name__ == "__main__":
