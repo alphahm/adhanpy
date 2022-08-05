@@ -30,8 +30,7 @@ def test_days_since_solstice():
 
 def test_PrayerTimes():
     date = DateComponents(2015, 7, 12)
-    params = CalculationParameters()
-    params.get_parameters_from_method(CalculationMethod.NORTH_AMERICA)
+    params = CalculationParameters(method=CalculationMethod.NORTH_AMERICA)
 
     params.madhab = Madhab.HANAFI
     coordinates = Coordinates(35.7750, -78.6336)
@@ -55,8 +54,7 @@ def test_offsets():
     format = "%I:%M %p"
     tz = ZoneInfo("America/New_York")
 
-    parameters = CalculationParameters()
-    parameters.get_parameters_from_method(CalculationMethod.MUSLIM_WORLD_LEAGUE)
+    parameters = CalculationParameters(method=CalculationMethod.MUSLIM_WORLD_LEAGUE)
 
     prayer_times = PrayerTimes(coordinates, date, parameters)
     assert prayer_times.fajr.astimezone(tz).strftime(format) == "05:35 AM"
@@ -95,8 +93,7 @@ def test_moon_sighting_method():
     date = DateComponents(2016, 1, 31)
     coordinates = Coordinates(35.7750, -78.6336)
 
-    parameters = CalculationParameters()
-    parameters.get_parameters_from_method(CalculationMethod.MOON_SIGHTING_COMMITTEE)
+    parameters = CalculationParameters(method=CalculationMethod.MOON_SIGHTING_COMMITTEE)
 
     prayer_times = PrayerTimes(coordinates, date, parameters)
 
@@ -114,9 +111,9 @@ def test_moon_sighting_method():
 def test_moon_sighting_method_high_lat():
     # Values from http://www.moonsighting.com/pray.php
     date = DateComponents(2016, 1, 1)
-    parameters = CalculationParameters()
-    parameters.get_parameters_from_method(CalculationMethod.MOON_SIGHTING_COMMITTEE)
+    parameters = CalculationParameters(method=CalculationMethod.MOON_SIGHTING_COMMITTEE)
     parameters.madhab = Madhab.HANAFI
+
     coordinates = Coordinates(59.9094, 10.7349)
 
     prayer_times = PrayerTimes(coordinates, date, parameters)
@@ -134,11 +131,10 @@ def test_moon_sighting_method_high_lat():
 
 def test_time_for_prayer():
     date = DateComponents(2016, 7, 1)
-    parameters = CalculationParameters()
-    parameters.get_parameters_from_method(CalculationMethod.MUSLIM_WORLD_LEAGUE)
+    parameters = CalculationParameters(method=CalculationMethod.MUSLIM_WORLD_LEAGUE)
     parameters.madhab = Madhab.HANAFI
 
-    parameters.highLatitudeRule = HighLatitudeRule.TWILIGHT_ANGLE
+    parameters.high_latitude_rule = HighLatitudeRule.TWILIGHT_ANGLE
     coordinates = Coordinates(59.9094, 10.7349)
 
     prayer_times = PrayerTimes(coordinates, date, parameters)

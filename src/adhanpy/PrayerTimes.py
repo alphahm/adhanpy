@@ -327,11 +327,9 @@ if __name__ == "__main__":
     today = datetime.now()
     date_components = DateComponents.from_utc(today)
 
-    calculation_parameters = CalculationParameters()
-    calculation_parameters.get_parameters_from_method(
-        CalculationMethod.MOON_SIGHTING_COMMITTEE
+    calculation_parameters = CalculationParameters(
+        method=CalculationMethod.MOON_SIGHTING_COMMITTEE
     )
-
     prayer_times = PrayerTimes(coordinates, date_components, calculation_parameters)
 
     london_zone = ZoneInfo("Europe/London")

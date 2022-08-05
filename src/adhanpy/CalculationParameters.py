@@ -6,155 +6,117 @@ from adhanpy.NightPortions import NightPortions
 
 
 class CalculationParameters:
-    def __init__(self) -> None:
-        # The method used to do the calculation
-        self.method = CalculationMethod.OTHER
-
+    def __init__(
+        self,
+        method: CalculationMethod = None,
+        adjustments: PrayerAdjustments = None,
+        method_adjustments: PrayerAdjustments = None,
+        isha_interval: int = 0,
+        fajr_angle: float = 0.0,
+        isha_angle: float = 0.0,
+    ):
         # The madhab used to calculate Asr
         self.madhab = Madhab.SHAFI
 
         # Rules for placing bounds on Fajr and Isha for high latitude areas
-        self.highLatitudeRule = HighLatitudeRule.MIDDLE_OF_THE_NIGHT
+        self.high_latitude_rule = HighLatitudeRule.MIDDLE_OF_THE_NIGHT
+
+        # Minutes after Maghrib (if set, the time for Isha will be Maghrib plus isha_interval)
+        self.isha_interval = isha_interval
+
+        # angle for calculating fajr
+        self.fajr_angle = fajr_angle
+
+        # angle for calculating isha
+        self.isha_angle = isha_angle
 
         # Used to optionally add or subtract a set amount of time from each prayer time
-        self.adjustments = PrayerAdjustments()
+        self.adjustments = (
+            adjustments if adjustments is not None else PrayerAdjustments()
+        )
 
         # Used for method adjustments
-        self.method_adjustments = PrayerAdjustments()
+        self.method_adjustments = (
+            method_adjustments
+            if method_adjustments is not None
+            else PrayerAdjustments()
+        )
 
-    def from_angles(self, fajr_angle: float, isha_angle: float):
-        """
-        Generate CalculationParameters from angles
-        param fajr_angle the angle for calculating fajr
-        param isha_angle the angle for calculating isha
-        """
-        self.fajr_angle = fajr_angle
-        self.isha_angle = isha_angle
-        return self
+        # The method used to do the calculation
+        # method is last to be assigned, it has precedence and will overwrite some of the other parameters
+        self.method = method
 
-    def from_fajr_angle_and_isha_interval(self, fajr_angle: float, isha_interval: int):
-        """
-        Generate CalculationParameters from fajr angle and isha interval
-        param fajr_angle the angle for calculating fajr
-        param isha_interval the amount of time after maghrib to have isha
-        """
-        self.from_angles(fajr_angle, 0.0)
-        self.isha_interval = isha_interval
-        return self
-
-    def from_angles_and_calculation_method(
-        self,
-        fajr_angle: float,
-        isha_angle: float,
-        calculation_method: CalculationMethod,
-    ):
-        """
-        Generate CalculationParameters from angles and a calculation method
-        param fajr_angle the angle for calculating fajr
-        param isha_angle the angle for calculating isha
-        param method the calculation method to use
-        """
-        self.from_angles(fajr_angle, isha_angle)
-        self.method = calculation_method
-        return self
-
-    def from_fajr_angle_isha_interval_and_calculation_method(
-        self,
-        fajr_angle: float,
-        isha_interval: int,
-        calculation_method: CalculationMethod,
-    ):
-        """
-        Generate CalculationParameters from fajr angle, isha interval, and calculation method
-        param fajr_angle the angle for calculating fajr
-        param isha_interval the amount of time after maghrib to have isha
-        param method the calculation method to use
-        """
-        self.from_fajr_angle_and_isha_interval(fajr_angle, isha_interval)
-        self.method = calculation_method
-        return self
-
-    def with_method_adjustments(self, prayer_adjustments: PrayerAdjustments):
-        """
-        Set the method adjustments for the current calculation parameters
-        param adjustments the prayer adjustments
-        return this calculation parameters instance
-        """
-        self.method_adjustments = prayer_adjustments
-        return self
+        if method is not None:
+            self._set_parameters_using_method(method)
+        else:
+            self.method = CalculationMethod.OTHER
 
     def night_portions(self):
-        if self.highLatitudeRule == HighLatitudeRule.MIDDLE_OF_THE_NIGHT:
+        if self.high_latitude_rule == HighLatitudeRule.MIDDLE_OF_THE_NIGHT:
             return NightPortions(1.0 / 2.0, 1.0 / 2.0)
-        elif self.highLatitudeRule == HighLatitudeRule.SEVENTH_OF_THE_NIGHT:
+        elif self.high_latitude_rule == HighLatitudeRule.SEVENTH_OF_THE_NIGHT:
             return NightPortions(1.0 / 7.0, 1.0 / 7.0)
-        elif self.highLatitudeRule == HighLatitudeRule.TWILIGHT_ANGLE:
+        elif self.high_latitude_rule == HighLatitudeRule.TWILIGHT_ANGLE:
             return NightPortions(self.fajr_angle / 60.0, self.isha_angle / 60.0)
         else:
             raise ValueError("Invalid high latitude rule")
 
-    def get_parameters_from_method(self, calculation_method: CalculationMethod):
-        """
-        Return the CalculationParameters for the given method
-        return CalculationParameters for the given Calculation method
-        """
+    def _set_parameters_using_method(self, calculation_method: CalculationMethod):
+        # set parmeters given calculation method
         if calculation_method == CalculationMethod.MUSLIM_WORLD_LEAGUE:
-            return self.from_angles_and_calculation_method(
-                18.0, 17.0, calculation_method
-            ).with_method_adjustments(PrayerAdjustments(0, 0, 1, 0, 0, 0))
+            self.fajr_angle = 18.0
+            self.isha_angle = 17.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
         elif calculation_method == CalculationMethod.EGYPTIAN:
-            return self.from_angles_and_calculation_method(
-                19.5, 17.5, calculation_method
-            ).with_method_adjustments(PrayerAdjustments(0, 0, 1, 0, 0, 0))
+            self.fajr_angle = 19.5
+            self.isha_angle = 17.5
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
         elif calculation_method == CalculationMethod.KARACHI:
-            return self.from_angles_and_calculation_method(
-                18.0, 18.0, calculation_method
-            ).with_method_adjustments(PrayerAdjustments(0, 0, 1, 0, 0, 0))
+            self.fajr_angle = 18.0
+            self.isha_angle = 18.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
         elif calculation_method == CalculationMethod.UMM_AL_QURA:
-            return self.from_fajr_angle_isha_interval_and_calculation_method(
-                18.5, 90, calculation_method
-            )
+            self.fajr_angle = 18.5
+            self.isha_interval = 90
 
         elif calculation_method == CalculationMethod.DUBAI:
-            return self.from_angles_and_calculation_method(
-                18.2, 18.2, calculation_method
-            ).with_method_adjustments(PrayerAdjustments(0, -3, 3, 3, 3, 0))
+            self.fajr_angle = 18.2
+            self.isha_angle = 18.2
+            self.method_adjustments = PrayerAdjustments(0, -3, 3, 3, 3, 0)
 
         elif calculation_method == CalculationMethod.MOON_SIGHTING_COMMITTEE:
-            return self.from_angles_and_calculation_method(
-                18.0, 18.0, calculation_method
-            ).with_method_adjustments(PrayerAdjustments(0, 0, 5, 0, 3, 0))
+            self.fajr_angle = 18.0
+            self.isha_angle = 18.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 5, 0, 3, 0)
 
         elif calculation_method == CalculationMethod.NORTH_AMERICA:
-            return self.from_angles_and_calculation_method(
-                15.0, 15.0, calculation_method
-            ).with_method_adjustments(PrayerAdjustments(0, 0, 1, 0, 0, 0))
+            self.fajr_angle = 15.0
+            self.isha_angle = 15.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
         elif calculation_method == CalculationMethod.KUWAIT:
-            return self.from_angles_and_calculation_method(
-                18.0, 17.5, calculation_method
-            )
+            self.fajr_angle = 18.0
+            self.isha_angle = 17.5
 
         elif calculation_method == CalculationMethod.QATAR:
-            return self.from_fajr_angle_isha_interval_and_calculation_method(
-                18.0, 90, calculation_method
-            )
+            self.fajr_angle = 18.0
+            self.isha_interval = 90
 
         elif calculation_method == CalculationMethod.SINGAPORE:
-            return self.from_angles_and_calculation_method(
-                20.0, 18.0, calculation_method
-            ).with_method_adjustments(PrayerAdjustments(0, 0, 1, 0, 0, 0))
+            self.fajr_angle = 20.0
+            self.isha_angle = 18.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
         elif calculation_method == CalculationMethod.UOIF:
-            return self.from_angles_and_calculation_method(
-                12.0, 12.0, calculation_method
-            )
+            self.fajr_angle = 12.0
+            self.isha_angle = 12.0
 
         elif calculation_method == CalculationMethod.OTHER:
-            return self.from_angles_and_calculation_method(0.0, 0.0, calculation_method)
+            self.fajr_angle = 0.0
+            self.isha_angle = 0.0
 
         else:
             raise ValueError("Invalid CalculationMethod")
