@@ -6,30 +6,21 @@ from adhanpy.NightPortions import NightPortions
 
 
 class CalculationParameters:
+    def __init__(self) -> None:
+        # The method used to do the calculation
+        self.method = CalculationMethod.OTHER
 
-    method = CalculationMethod.OTHER
-    # The method used to do the calculation
+        # The madhab used to calculate Asr
+        self.madhab = Madhab.SHAFI
 
-    fajr_angle: float
-    # The angle of the sun used to calculate fajr
+        # Rules for placing bounds on Fajr and Isha for high latitude areas
+        self.highLatitudeRule = HighLatitudeRule.MIDDLE_OF_THE_NIGHT
 
-    isha_angle: float
-    # The angle of the sun used to calculate isha
+        # Used to optionally add or subtract a set amount of time from each prayer time
+        self.adjustments = PrayerAdjustments()
 
-    isha_interval: int
-    # Minutes after Maghrib (if set, the time for Isha will be Maghrib plus isha_interval)
-
-    madhab = Madhab.SHAFI
-    # The madhab used to calculate Asr
-
-    highLatitudeRule = HighLatitudeRule.MIDDLE_OF_THE_NIGHT
-    # Rules for placing bounds on Fajr and Isha for high latitude areas
-
-    adjustments = PrayerAdjustments()
-    # Used to optionally add or subtract a set amount of time from each prayer time
-
-    method_adjustments = PrayerAdjustments()
-    # Used for method adjustments
+        # Used for method adjustments
+        self.method_adjustments = PrayerAdjustments()
 
     def from_angles(self, fajr_angle: float, isha_angle: float):
         """

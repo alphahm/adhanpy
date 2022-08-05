@@ -205,8 +205,8 @@ class PrayerTimes:
             if temp_fajr is None or temp_fajr < safe_fajr:
                 temp_fajr = safe_fajr
 
-            # Isha calculation with check against safe value
 
+            # Isha calculation with check against safe value
             try:
                 if calculation_parameters.isha_interval < 1:
                     raise ValueError(
