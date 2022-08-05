@@ -20,9 +20,16 @@ class TimeComponents:
         seconds = math.floor((value - (hours + minutes / 60.0)) * 60 * 60)
         return cls(int(hours), int(minutes), int(seconds))
 
-
     def date_components(self, date_components: DateComponents) -> datetime:
-        date_time = datetime(date_components.year, date_components.month, date_components.day, 0, self.minutes, self.seconds, tzinfo=timezone.utc)
+        date_time = datetime(
+            date_components.year,
+            date_components.month,
+            date_components.day,
+            0,
+            self.minutes,
+            self.seconds,
+            tzinfo=timezone.utc,
+        )
         date_time = date_time + timedelta(hours=self.hours)
 
         return date_time

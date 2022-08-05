@@ -3,15 +3,12 @@ from internal.ShadowLength import ShadowLength
 
 
 class Madhab(Enum):
-    """
-    Shafi Madhab
-    """
-    SHAFI = 0
 
-    """
-    Hanafi Madhab
-    """
+    SHAFI = 0
+    # Shafi Madhab
+
     HANAFI = 1
+    # Hanafi Madhab
 
     def get_shadow_length(self) -> ShadowLength:
         if self == Madhab.SHAFI:

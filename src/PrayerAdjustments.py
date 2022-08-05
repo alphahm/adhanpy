@@ -1,45 +1,41 @@
 class PrayerAdjustments:
 
-    """
-    Fajr offset in minutes
-    """
     fajr: int
+    # Fajr offset in minutes
 
-    """
-    Sunrise offset in minutes
-    """
     sunrise: int
+    # Sunrise offset in minutes
 
-    """
-    Dhuhr offset in minutes
-    """
     dhuhr: int
+    # Dhuhr offset in minutes
 
-    """
-    Asr offset in minutes
-    """
     asr: int
+    # Asr offset in minutes
 
-    """
-    Maghrib offset in minutes
-    """
     maghrib: int
+    # Maghrib offset in minutes
 
-    """
-    Isha offset in minutes
-    """
     isha: int
+    # Isha offset in minutes
 
-    """
-    Gets a PrayerAdjustments object to offset prayer times (defaulting to 0)
-    param fajr offset from fajr in minutes
-    param sunrise offset from sunrise in minutes
-    param dhuhr offset from dhuhr in minutes
-    param asr offset from asr in minutes
-    param maghrib offset from maghrib in minutes
-    param isha offset from isha in minutes
-    """
-    def __init__(self, fajr: int = 0, sunrise: int = 0, dhuhr: int = 0, asr: int = 0, maghrib: int = 0, isha: int = 0):
+    def __init__(
+        self,
+        fajr: int = 0,
+        sunrise: int = 0,
+        dhuhr: int = 0,
+        asr: int = 0,
+        maghrib: int = 0,
+        isha: int = 0,
+    ):
+        """
+        Gets a PrayerAdjustments object to offset prayer times (defaulting to 0)
+        param fajr offset from fajr in minutes
+        param sunrise offset from sunrise in minutes
+        param dhuhr offset from dhuhr in minutes
+        param asr offset from asr in minutes
+        param maghrib offset from maghrib in minutes
+        param isha offset from isha in minutes
+        """
         self.fajr = fajr
         self.sunrise = sunrise
         self.dhuhr = dhuhr

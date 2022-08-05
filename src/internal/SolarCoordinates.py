@@ -1,7 +1,17 @@
 import math
 from internal.CalendricalHelper import julian_century
-from internal.Astronomical import apparent_obliquity_of_the_ecliptic, apparent_solar_longitude, mean_obliquity_of_the_ecliptic, mean_sidereal_time, mean_solar_longitude, mean_lunar_longitude, ascending_lunar_node_longitude, nutation_in_longitude, nutation_in_obliquity
-from internal.DoubleUtil import unwind_angle
+from internal.Astronomical import (
+    apparent_obliquity_of_the_ecliptic,
+    apparent_solar_longitude,
+    mean_obliquity_of_the_ecliptic,
+    mean_sidereal_time,
+    mean_solar_longitude,
+    mean_lunar_longitude,
+    ascending_lunar_node_longitude,
+    nutation_in_longitude,
+    nutation_in_obliquity,
+)
+from src.internal.FloatUtil import unwind_angle
 
 
 class SolarCoordinates:
@@ -21,7 +31,11 @@ class SolarCoordinates:
         self.declination = math.degrees(math.asin(math.sin(εapp) * math.sin(λ)))
 
         # Equation from Astronomical Algorithms page 165
-        self.right_ascension = unwind_angle(math.degrees(math.atan2(math.cos(εapp) * math.sin(λ), math.cos(λ))))
+        self.right_ascension = unwind_angle(
+            math.degrees(math.atan2(math.cos(εapp) * math.sin(λ), math.cos(λ)))
+        )
 
         # Equation from Astronomical Algorithms page 88
-        self.apparent_sidereal_time = θ0 + (((ΔΨ * 3600) * math.cos(math.radians(ε0 + Δε))) / 3600)
+        self.apparent_sidereal_time = θ0 + (
+            ((ΔΨ * 3600) * math.cos(math.radians(ε0 + Δε))) / 3600
+        )

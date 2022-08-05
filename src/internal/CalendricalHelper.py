@@ -11,6 +11,7 @@ def julian_day(year, month, day, hours):
 
     return i0 + i1 + D + B - 1524.5
 
+
 def julian_century(JD):
     # Equation from Astronomical Algorithms page 163
     return (JD - 2451545.0) / 36525
