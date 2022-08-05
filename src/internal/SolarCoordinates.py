@@ -11,7 +11,7 @@ from internal.Astronomical import (
     nutation_in_longitude,
     nutation_in_obliquity,
 )
-from src.internal.FloatUtil import unwind_angle
+from internal.FloatUtil import unwind_angle
 
 
 class SolarCoordinates:

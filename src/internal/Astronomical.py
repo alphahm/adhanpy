@@ -1,4 +1,4 @@
-from src.internal.FloatUtil import closest_angle, unwind_angle, normalize_with_bound
+from internal.FloatUtil import closest_angle, unwind_angle, normalize_with_bound
 import math
 
 
