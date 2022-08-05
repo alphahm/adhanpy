@@ -1,6 +1,6 @@
 import math
-from internal.CalendricalHelper import julian_century
-from internal.Astronomical import (
+from adhanpy.internal.CalendricalHelper import julian_century
+from adhanpy.internal.Astronomical import (
     apparent_obliquity_of_the_ecliptic,
     apparent_solar_longitude,
     mean_obliquity_of_the_ecliptic,
@@ -11,7 +11,7 @@ from internal.Astronomical import (
     nutation_in_longitude,
     nutation_in_obliquity,
 )
-from internal.FloatUtil import unwind_angle
+from adhanpy.internal.FloatUtil import unwind_angle
 
 
 class SolarCoordinates:

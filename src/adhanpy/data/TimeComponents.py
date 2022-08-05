@@ -1,7 +1,7 @@
 import math
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from data.DateComponents import DateComponents
+from adhanpy.data.DateComponents import DateComponents
 
 
 @dataclass

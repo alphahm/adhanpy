@@ -1,6 +1,5 @@
 from enum import Enum
-from internal.ShadowLength import ShadowLength
-
+from adhanpy.internal.ShadowLength import ShadowLength
 
 class Madhab(Enum):
 

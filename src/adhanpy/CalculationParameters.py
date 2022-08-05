@@ -1,8 +1,8 @@
-from CalculationMethod import CalculationMethod
-from Madhab import Madhab
-from HighLatitudeRule import HighLatitudeRule
-from PrayerAdjustments import PrayerAdjustments
-from NightPortions import NightPortions
+from adhanpy.CalculationMethod import CalculationMethod
+from adhanpy.Madhab import Madhab
+from adhanpy.HighLatitudeRule import HighLatitudeRule
+from adhanpy.PrayerAdjustments import PrayerAdjustments
+from adhanpy.NightPortions import NightPortions
 
 
 class CalculationParameters:

@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 import calendar
-from CalculationMethod import CalculationMethod
-from CalculationParameters import CalculationParameters
-from internal.SolarTime import SolarTime
-from Coordinates import Coordinates
-from data.TimeComponents import TimeComponents
-from data.DateComponents import DateComponents
-from data.CalendarUtil import rounded_minute
+from adhanpy.CalculationMethod import CalculationMethod
+from adhanpy.CalculationParameters import CalculationParameters
+from adhanpy.internal.SolarTime import SolarTime
+from adhanpy.Coordinates import Coordinates
+from adhanpy.data.TimeComponents import TimeComponents
+from adhanpy.data.DateComponents import DateComponents
+from adhanpy.data.CalendarUtil import rounded_minute
 
 
 def days_since_solstice(day_of_year: int, year: int, latitude: float) -> int:
@@ -20,7 +20,7 @@ def days_since_solstice(day_of_year: int, year: int, latitude: float) -> int:
     if latitude >= 0:
         days_since_solstice = day_of_year + northern_offset
         if days_since_solstice >= days_in_year:
-            daysSinceSolistice = daysSinceSolistice - days_in_year
+            days_since_solstice = days_since_solstice - days_in_year
     else:
         days_since_solstice = day_of_year - southern_offset
         if days_since_solstice < 0:
@@ -161,7 +161,11 @@ class PrayerTimes:
             tomorrow_sunrise = tomorrow_sunrise_components.date_components(
                 tomorrow_date_components
             )
-            night = tomorrow_sunrise.timestamp() - sunset_components.timestamp()
+
+            night = (
+                tomorrow_sunrise.timestamp() * 1000
+                - sunset_components.timestamp() * 1000
+            )
 
             time_components = TimeComponents.from_float(
                 solar_time.hour_angle(-calculation_parameters.fajr_angle, False)
@@ -181,7 +185,6 @@ class PrayerTimes:
 
             night_portions = calculation_parameters.night_portions()
 
-            #   final Date safe_fajr;
             if (
                 calculation_parameters.method
                 == CalculationMethod.MOON_SIGHTING_COMMITTEE
