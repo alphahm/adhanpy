@@ -1,3 +1,4 @@
+from adhanpy.Coordinates import Coordinates
 from adhanpy.internal.FloatUtil import closest_angle, unwind_angle, normalize_with_bound
 import math
 
@@ -98,7 +99,7 @@ def apparent_obliquity_of_the_ecliptic(T, ε0):
     return ε0 + (0.00256 * math.cos(math.radians(O)))
 
 
-def altitudeOfCelestialBody(φ, δ, H):
+def altitude_of_celestial_body(φ, δ, H):
     # Equation from Astronomical Algorithms page 93
     term1 = math.sin(math.radians(φ)) * math.sin(math.radians(δ))
     term2 = (
@@ -141,7 +142,9 @@ def interpolate_angles(y2, y1, y3, n):
     return y2 + ((n / 2) * (a + b + (n * c)))
 
 
-def corrected_hour_angle(m0, h0, coordinates, afterTransit, Θ0, α2, α1, α3, δ2, δ1, δ3):
+def corrected_hour_angle(
+    m0, h0, coordinates: Coordinates, afterTransit: bool, Θ0, α2, α1, α3, δ2, δ1, δ3
+):
     # Equation from page Astronomical Algorithms 102
     Lw = coordinates.longitude * -1
     term1 = math.sin(math.radians(h0)) - (
@@ -155,7 +158,7 @@ def corrected_hour_angle(m0, h0, coordinates, afterTransit, Θ0, α2, α1, α3, 
         α = unwind_angle(interpolate_angles(α2, α1, α3, m))
         δ = interpolate(δ2, δ1, δ3, m)
         H = θ - Lw - α
-        h = altitudeOfCelestialBody(coordinates.latitude, δ, H)
+        h = altitude_of_celestial_body(coordinates.latitude, δ, H)
         term3 = h - h0
         term4 = (
             360
