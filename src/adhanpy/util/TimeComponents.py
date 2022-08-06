@@ -14,10 +14,9 @@ class TimeComponents:
     def from_float(cls, value):
         if math.isinf(value) or math.isnan(value):
             return None
-
-        hours = math.floor(value)
-        minutes = math.floor((value - hours) * 60.0)
-        seconds = math.floor((value - (hours + minutes / 60.0)) * 60 * 60)
+        
+        minutes, seconds = divmod(value * 60 * 60, 60)
+        hours, minutes = divmod(minutes, 60)
         return cls(int(hours), int(minutes), int(seconds))
 
     def date_components(self, date_components: DateComponents) -> datetime:
