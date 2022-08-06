@@ -1,13 +1,14 @@
 from datetime import datetime
-from adhanpy.data.DateComponents import DateComponents
-from adhanpy.CalculationMethod import CalculationMethod
-from adhanpy.CalculationParameters import CalculationParameters
-from adhanpy.Madhab import Madhab
-from adhanpy.Coordinates import Coordinates
+from adhanpy import calculation
+from adhanpy.util.DateComponents import DateComponents
+from adhanpy.calculation.CalculationMethod import CalculationMethod
+from adhanpy.calculation.CalculationParameters import CalculationParameters
+from adhanpy.calculation.Madhab import Madhab
+from adhanpy.data.Coordinates import Coordinates
 from adhanpy.PrayerTimes import PrayerTimes, days_since_solstice
-from adhanpy.PrayerAdjustments import PrayerAdjustments
-from adhanpy.Prayer import Prayer
-from adhanpy.HighLatitudeRule import HighLatitudeRule
+from adhanpy.calculation.PrayerAdjustments import PrayerAdjustments
+from adhanpy.data.Prayer import Prayer
+from adhanpy.calculation.HighLatitudeRule import HighLatitudeRule
 from zoneinfo import ZoneInfo
 
 
@@ -33,8 +34,8 @@ def test_PrayerTimes():
     params = CalculationParameters(method=CalculationMethod.NORTH_AMERICA)
 
     params.madhab = Madhab.HANAFI
-    coordinates = Coordinates(35.7750, -78.6336)
-    prayer_times = PrayerTimes(coordinates, date, params)
+    coordinates = (35.7750, -78.6336)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=params)
 
     format = "%I:%M %p"
     tz = ZoneInfo("America/New_York")
@@ -49,14 +50,14 @@ def test_PrayerTimes():
 
 def test_offsets():
     date = DateComponents(2015, 12, 1)
-    coordinates = Coordinates(35.7750, -78.6336)
+    coordinates = (35.7750, -78.6336)
 
     format = "%I:%M %p"
     tz = ZoneInfo("America/New_York")
 
-    parameters = CalculationParameters(method=CalculationMethod.MUSLIM_WORLD_LEAGUE)
+    calculation_method = CalculationMethod.MUSLIM_WORLD_LEAGUE
 
-    prayer_times = PrayerTimes(coordinates, date, parameters)
+    prayer_times = PrayerTimes(coordinates, date, calculation_method)
     assert prayer_times.fajr.astimezone(tz).strftime(format) == "05:35 AM"
     assert prayer_times.sunrise.astimezone(tz).strftime(format) == "07:06 AM"
     assert prayer_times.dhuhr.astimezone(tz).strftime(format) == "12:05 PM"
@@ -64,6 +65,7 @@ def test_offsets():
     assert prayer_times.maghrib.astimezone(tz).strftime(format) == "05:01 PM"
     assert prayer_times.isha.astimezone(tz).strftime(format) == "06:26 PM"
 
+    parameters = CalculationParameters(method=calculation_method)
     parameters.adjustments.fajr = 10
     parameters.adjustments.sunrise = 10
     parameters.adjustments.dhuhr = 10
@@ -71,7 +73,7 @@ def test_offsets():
     parameters.adjustments.maghrib = 10
     parameters.adjustments.isha = 10
 
-    prayer_times = PrayerTimes(coordinates, date, parameters)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=parameters)
     assert prayer_times.fajr.astimezone(tz).strftime(format) == "05:45 AM"
     assert prayer_times.sunrise.astimezone(tz).strftime(format) == "07:16 AM"
     assert prayer_times.dhuhr.astimezone(tz).strftime(format) == "12:15 PM"
@@ -80,7 +82,7 @@ def test_offsets():
     assert prayer_times.isha.astimezone(tz).strftime(format) == "06:36 PM"
 
     parameters.adjustments = PrayerAdjustments()
-    prayer_times = PrayerTimes(coordinates, date, parameters)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=parameters)
     assert prayer_times.fajr.astimezone(tz).strftime(format) == "05:35 AM"
     assert prayer_times.sunrise.astimezone(tz).strftime(format) == "07:06 AM"
     assert prayer_times.dhuhr.astimezone(tz).strftime(format) == "12:05 PM"
@@ -91,11 +93,11 @@ def test_offsets():
 
 def test_moon_sighting_method():
     date = DateComponents(2016, 1, 31)
-    coordinates = Coordinates(35.7750, -78.6336)
+    coordinates = (35.7750, -78.6336)
 
-    parameters = CalculationParameters(method=CalculationMethod.MOON_SIGHTING_COMMITTEE)
+    calculation_method = CalculationMethod.MOON_SIGHTING_COMMITTEE
 
-    prayer_times = PrayerTimes(coordinates, date, parameters)
+    prayer_times = PrayerTimes(coordinates, date, calculation_method)
 
     format = "%I:%M %p"
     tz = ZoneInfo("America/New_York")
@@ -114,9 +116,9 @@ def test_moon_sighting_method_high_lat():
     parameters = CalculationParameters(method=CalculationMethod.MOON_SIGHTING_COMMITTEE)
     parameters.madhab = Madhab.HANAFI
 
-    coordinates = Coordinates(59.9094, 10.7349)
+    coordinates = (59.9094, 10.7349)
 
-    prayer_times = PrayerTimes(coordinates, date, parameters)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=parameters)
 
     format = "%I:%M %p"
     tz = ZoneInfo("Europe/Oslo")
@@ -135,9 +137,9 @@ def test_time_for_prayer():
     parameters.madhab = Madhab.HANAFI
 
     parameters.high_latitude_rule = HighLatitudeRule.TWILIGHT_ANGLE
-    coordinates = Coordinates(59.9094, 10.7349)
+    coordinates = (59.9094, 10.7349)
 
-    prayer_times = PrayerTimes(coordinates, date, parameters)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=parameters)
     assert prayer_times.fajr == prayer_times.time_for_prayer(Prayer.FAJR)
     assert prayer_times.sunrise == prayer_times.time_for_prayer(Prayer.SUNRISE)
     assert prayer_times.dhuhr == prayer_times.time_for_prayer(Prayer.DHUHR)

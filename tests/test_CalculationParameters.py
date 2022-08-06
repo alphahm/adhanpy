@@ -1,7 +1,7 @@
 import pytest
-from adhanpy.CalculationMethod import CalculationMethod
-from adhanpy.CalculationParameters import CalculationParameters
-from adhanpy.HighLatitudeRule import HighLatitudeRule
+from adhanpy.calculation.CalculationMethod import CalculationMethod
+from adhanpy.calculation.CalculationParameters import CalculationParameters
+from adhanpy.calculation.HighLatitudeRule import HighLatitudeRule
 
 
 def test_calculation_method():

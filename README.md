@@ -35,4 +35,5 @@ MIT
 
 ## Credits
 
-Credits go to the original author for the original implementation, especially the very complex astronomy formulas.
+Credits go to the original author for the original implementation in java and other languages, especially the very complex astronomy
+formulas.

@@ -1,12 +1,12 @@
 import math
-from adhanpy.internal.Astronomical import (
+from adhanpy.astronomy.Astronomical import (
     approximate_transit,
     corrected_hour_angle,
     corrected_transit,
 )
-from adhanpy.internal.CalendricalHelper import julian_day
-from adhanpy.internal.ShadowLength import ShadowLength
-from adhanpy.internal.SolarCoordinates import SolarCoordinates
+from adhanpy.astronomy.CalendricalHelper import julian_day
+from adhanpy.data.ShadowLength import ShadowLength
+from adhanpy.astronomy.SolarCoordinates import SolarCoordinates
 
 
 class SolarTime:

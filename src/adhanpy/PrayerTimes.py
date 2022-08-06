@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta, timezone
-from zoneinfo import ZoneInfo
 import calendar
-from adhanpy.CalculationMethod import CalculationMethod
-from adhanpy.CalculationParameters import CalculationParameters
-from adhanpy.Prayer import Prayer
-from adhanpy.internal.SolarTime import SolarTime
-from adhanpy.Coordinates import Coordinates
-from adhanpy.data.TimeComponents import TimeComponents
-from adhanpy.data.DateComponents import DateComponents
-from adhanpy.data.CalendarUtil import rounded_minute
+from typing import Tuple
+from adhanpy.calculation.CalculationMethod import CalculationMethod
+from adhanpy.calculation.CalculationParameters import CalculationParameters
+from adhanpy.data.Prayer import Prayer
+from adhanpy.astronomy.SolarTime import SolarTime
+from adhanpy.data.Coordinates import Coordinates
+from adhanpy.util.TimeComponents import TimeComponents
+from adhanpy.util.DateComponents import DateComponents
+from adhanpy.util.CalendarUtil import rounded_minute
 
 
 def days_since_solstice(day_of_year: int, year: int, latitude: float) -> int:
@@ -85,10 +85,29 @@ def season_adjusted_evening_twilight(
 class PrayerTimes:
     def __init__(
         self,
-        coordinates: Coordinates,
-        date_components: DateComponents,
-        calculation_parameters: CalculationParameters,
+        coordinates: Tuple[float, float],
+        date: datetime,
+        calculation_method: CalculationMethod = None,
+        calculation_parameters: CalculationParameters = None,
     ):
+        """
+        Arguments:
+            coordinates: (latitude, longitude)
+            date: DateComponents
+            calculation_parameters: CalculationParameters
+        Returns:
+            PrayerTimes object with UTC datetimes for fajr, sunrise, dhuhr, asr, maghrib and isha
+        """
+
+        if (calculation_parameters and calculation_method) or not (
+            calculation_parameters or calculation_method
+        ):
+            raise ValueError(
+                "Either calculation_method (CalculationMethod) or calculation_parameters (CalculationParameters) can be passed."
+            )
+
+        if calculation_parameters is None:
+            calculation_parameters = CalculationParameters(method=calculation_method)
 
         temp_fajr = None
         temp_sunrise = None
@@ -96,6 +115,9 @@ class PrayerTimes:
         temp_asr = None
         temp_maghrib = None
         temp_isha = None
+
+        self.coordinates = Coordinates(coordinates[0], coordinates[1])
+        date_components = DateComponents.from_utc(date)
 
         prayer_date = datetime(
             date_components.year,
@@ -109,7 +131,7 @@ class PrayerTimes:
         tomorrow_date = prayer_date + timedelta(days=1)
         tomorrow_date_components = DateComponents.from_utc(tomorrow_date)
 
-        solar_time = SolarTime(date_components, coordinates)
+        solar_time = SolarTime(date_components, self.coordinates)
 
         time_components = TimeComponents.from_float(solar_time.transit)
         transit = (
@@ -132,7 +154,7 @@ class PrayerTimes:
             else time_components.date_components(date_components)
         )
 
-        tomorrow_solar_time = SolarTime(tomorrow_date_components, coordinates)
+        tomorrow_solar_time = SolarTime(tomorrow_date_components, self.coordinates)
         tomorrow_sunrise_components = TimeComponents.from_float(
             tomorrow_solar_time.sunrise
         )
@@ -178,7 +200,7 @@ class PrayerTimes:
             if (
                 calculation_parameters.method
                 == CalculationMethod.MOON_SIGHTING_COMMITTEE
-                and coordinates.latitude >= 55
+                and self.coordinates.latitude >= 55
             ):
                 temp_fajr = sunrise_components + timedelta(
                     seconds=-1 * int(night / 7000)
@@ -191,7 +213,7 @@ class PrayerTimes:
                 == CalculationMethod.MOON_SIGHTING_COMMITTEE
             ):
                 safe_fajr = season_adjusted_morning_twilight(
-                    coordinates.latitude,
+                    self.coordinates.latitude,
                     day_of_year,
                     prayer_date.year,
                     sunrise_components,
@@ -227,7 +249,7 @@ class PrayerTimes:
                 if (
                     calculation_parameters.method
                     == CalculationMethod.MOON_SIGHTING_COMMITTEE
-                    and coordinates.latitude >= 55
+                    and self.coordinates.latitude >= 55
                 ):
                     night_fraction = night / 7000
                     temp_isha = sunset_components + timedelta(
@@ -239,7 +261,7 @@ class PrayerTimes:
                     == CalculationMethod.MOON_SIGHTING_COMMITTEE
                 ):
                     safe_isha = season_adjusted_evening_twilight(
-                        coordinates.latitude,
+                        self.coordinates.latitude,
                         day_of_year,
                         date_components.year,
                         sunset_components,
@@ -319,27 +341,3 @@ class PrayerTimes:
             return self.isha
         else:
             return None
-
-
-if __name__ == "__main__":
-    coordinates = Coordinates(51.49799827422162, -0.1358135027951458)
-
-    today = datetime.now()
-    date_components = DateComponents.from_utc(today)
-
-    calculation_parameters = CalculationParameters(
-        method=CalculationMethod.MOON_SIGHTING_COMMITTEE
-    )
-    prayer_times = PrayerTimes(coordinates, date_components, calculation_parameters)
-
-    london_zone = ZoneInfo("Europe/London")
-
-    print(
-        f"Prayer times for today ({today.astimezone(london_zone).strftime('%A %d %B %Y')}):"
-    )
-    print(f"Fajr: {prayer_times.fajr.astimezone(london_zone).strftime('%H:%M')}")
-    print(f"Sunrise: {prayer_times.sunrise.astimezone(london_zone).strftime('%H:%M')}")
-    print(f"Dhuhr: {prayer_times.dhuhr.astimezone(london_zone).strftime('%H:%M')}")
-    print(f"Asr: {prayer_times.asr.astimezone(london_zone).strftime('%H:%M')}")
-    print(f"Maghrib: {prayer_times.maghrib.astimezone(london_zone).strftime('%H:%M')}")
-    print(f"Isha: {prayer_times.isha.astimezone(london_zone).strftime('%H:%M')}")

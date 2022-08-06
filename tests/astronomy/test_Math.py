@@ -1,8 +1,8 @@
 import pytest
 from datetime import datetime, timezone
-import adhanpy.internal.FloatUtil as FloatUtil
-from adhanpy.data.TimeComponents import TimeComponents
-import adhanpy.data.CalendarUtil as CalendarUtil
+import adhanpy.util.FloatUtil as FloatUtil
+from adhanpy.util.TimeComponents import TimeComponents
+import adhanpy.util.CalendarUtil as CalendarUtil
 
 
 def test_normalizing():
