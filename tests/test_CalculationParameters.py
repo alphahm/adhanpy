@@ -4,72 +4,53 @@ from adhanpy.calculation.CalculationParameters import CalculationParameters
 from adhanpy.calculation.HighLatitudeRule import HighLatitudeRule
 
 
-def test_calculation_method():
-    params = CalculationParameters(method=CalculationMethod.MUSLIM_WORLD_LEAGUE)
-    assert params.fajr_angle == pytest.approx(18, abs=1e-6)
-    assert params.isha_angle == pytest.approx(17, abs=1e-6)
-    assert params.isha_interval == 0
-    assert params.method == CalculationMethod.MUSLIM_WORLD_LEAGUE
+@pytest.mark.parametrize(
+    "calculation_method, fajr_angle, isha_angle, isha_interval",
+    [
+        (CalculationMethod.MUSLIM_WORLD_LEAGUE, 18, 17, 0),
+        (CalculationMethod.EGYPTIAN, 19.5, 17.5, 0),
+        (CalculationMethod.KARACHI, 18, 18, 0),
+        (CalculationMethod.UMM_AL_QURA, 18.5, 0, 90),
+        (CalculationMethod.DUBAI, 18.2, 18.2, 0),
+        (CalculationMethod.MOON_SIGHTING_COMMITTEE, 18, 18, 0),
+        (CalculationMethod.NORTH_AMERICA, 15, 15, 0),
+        (CalculationMethod.KUWAIT, 18, 17.5, 0),
+        (CalculationMethod.QATAR, 18, 0, 90),
+        (CalculationMethod.SINGAPORE, 20, 18, 0),
+        (CalculationMethod.UOIF, 12, 12, 0),
+        (CalculationMethod.OTHER, 0, 0, 0),
+    ],
+)
+def test_calculation_method(calculation_method, fajr_angle, isha_angle, isha_interval):
+    # Arrange, Act
+    params = CalculationParameters(method=calculation_method)
 
-    params = CalculationParameters(method=CalculationMethod.EGYPTIAN)
-    assert params.fajr_angle == pytest.approx(19.5, abs=1e-6)
-    assert params.isha_angle == pytest.approx(17.5, abs=1e-6)
-    assert params.isha_interval == 0
-
-    params = CalculationParameters(method=CalculationMethod.KARACHI)
-    assert params.fajr_angle == pytest.approx(18, abs=1e-6)
-    assert params.isha_angle == pytest.approx(18, abs=1e-6)
-    assert params.isha_interval == 0
-
-    params = CalculationParameters(method=CalculationMethod.UMM_AL_QURA)
-    assert params.fajr_angle == pytest.approx(18.5, abs=1e-6)
-    assert params.isha_angle == pytest.approx(0, abs=1e-6)
-    assert params.isha_interval == 90
-
-    params = CalculationParameters(method=CalculationMethod.DUBAI)
-    assert params.fajr_angle == pytest.approx(18.2, abs=1e-6)
-    assert params.isha_angle == pytest.approx(18.2, abs=1e-6)
-    assert params.isha_interval == 0
-
-    params = CalculationParameters(method=CalculationMethod.MOON_SIGHTING_COMMITTEE)
-    assert params.fajr_angle == pytest.approx(18, abs=1e-6)
-    assert params.isha_angle == pytest.approx(18, abs=1e-6)
-    assert params.isha_interval == 0
-
-    params = CalculationParameters(method=CalculationMethod.NORTH_AMERICA)
-    assert params.fajr_angle == pytest.approx(15, abs=1e-6)
-    assert params.isha_angle == pytest.approx(15, abs=1e-6)
-    assert params.isha_interval == 0
-
-    params = CalculationParameters(method=CalculationMethod.KUWAIT)
-    assert params.fajr_angle == pytest.approx(18, abs=1e-6)
-    assert params.isha_angle == pytest.approx(17.5, abs=1e-6)
-    assert params.isha_interval == 0
-
-    params = CalculationParameters(method=CalculationMethod.QATAR)
-    assert params.fajr_angle == pytest.approx(18, abs=1e-6)
-    assert params.isha_angle == pytest.approx(0, abs=1e-6)
-    assert params.isha_interval == 90
-
-    params = CalculationParameters(method=CalculationMethod.OTHER)
-    assert params.fajr_angle == pytest.approx(0, abs=1e-6)
-    assert params.isha_angle == pytest.approx(0, abs=1e-6)
-    assert params.isha_interval == 0
+    # Assert
+    assert params.fajr_angle == pytest.approx(fajr_angle, abs=1e-6)
+    assert params.isha_angle == pytest.approx(isha_angle, abs=1e-6)
+    assert params.isha_interval == isha_interval
+    assert params.method == calculation_method
 
 
-def test_night_portion():
-    parameters = CalculationParameters(fajr_angle=18, isha_angle=18)
-    parameters.high_latitude_rule = HighLatitudeRule.MIDDLE_OF_THE_NIGHT
+@pytest.mark.parametrize(
+    "fajr_angle, isha_angle, latitude_rule, night_portions_fajr, night_portions_isha",
+    [
+        (18, 18, HighLatitudeRule.MIDDLE_OF_THE_NIGHT, 0.5, 0.5),
+        (18.0, 18.0, HighLatitudeRule.SEVENTH_OF_THE_NIGHT, 1.0 / 7.0, 1.0 / 7.0),
+        (10.0, 15.0, HighLatitudeRule.TWILIGHT_ANGLE, 10.0 / 60.0, 15.0 / 60.0),
+    ],
+)
+def test_night_portion(
+    fajr_angle, isha_angle, latitude_rule, night_portions_fajr, night_portions_isha
+):
+    # Arrange, Act
+    parameters = CalculationParameters(fajr_angle=fajr_angle, isha_angle=isha_angle)
+    parameters.high_latitude_rule = latitude_rule
 
-    assert parameters.night_portions().fajr == pytest.approx(0.5, abs=1e-3)
-    assert parameters.night_portions().isha == pytest.approx(0.5, abs=1e-3)
-
-    parameters = CalculationParameters(fajr_angle=18.0, isha_angle=18.0)
-    parameters.high_latitude_rule = HighLatitudeRule.SEVENTH_OF_THE_NIGHT
-    assert parameters.night_portions().fajr == pytest.approx(1.0 / 7.0, abs=1e-3)
-    assert parameters.night_portions().isha == pytest.approx(1.0 / 7.0, abs=1e-3)
-
-    parameters = CalculationParameters(fajr_angle=10.0, isha_angle=15.0)
-    parameters.high_latitude_rule = HighLatitudeRule.TWILIGHT_ANGLE
-    assert parameters.night_portions().fajr == pytest.approx(10.0 / 60.0, abs=1e-3)
-    assert parameters.night_portions().isha == pytest.approx(15.0 / 60.0, abs=1e-3)
+    # Assert
+    assert parameters.night_portions().fajr == pytest.approx(
+        night_portions_fajr, abs=1e-3
+    )
+    assert parameters.night_portions().isha == pytest.approx(
+        night_portions_isha, abs=1e-3
+    )
