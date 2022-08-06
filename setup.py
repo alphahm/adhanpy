@@ -1,10 +1,16 @@
 from setuptools import setup, find_packages
+from pathlib import Path
+
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="adhanpy",
     version="1.0.0",
     author="alphahm",
     description="An offline library calculating prayer times",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[
