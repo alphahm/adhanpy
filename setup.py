@@ -3,9 +3,10 @@ from setuptools import setup, find_packages
 setup(
     name="adhanpy",
     version="1.0.0",
+    author="alphahm",
+    description="An offline library calculating prayer times",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    author="alphahm",
     classifiers=[
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
