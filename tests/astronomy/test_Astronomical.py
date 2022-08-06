@@ -15,8 +15,8 @@ def test_solar_coordinates():
     # values from Astronomical Algorithms page 165
     jd = CalendricalHelper.julian_day(1992, 10, 13)
     solar = SolarCoordinates(jd)
-
     T = CalendricalHelper.julian_century(jd)
+
     L0 = Astronomical.mean_solar_longitude(T)
     ε0 = Astronomical.mean_obliquity_of_the_ecliptic(T)
     εapp = Astronomical.apparent_obliquity_of_the_ecliptic(T, ε0)
@@ -65,7 +65,6 @@ def test_solar_coordinates():
 
 
 def test_right_ascension_edge_case():
-    # SolarTime previousTime = null;
     coordinates = Coordinates(35 + 47.0 / 60.0, -78 - 39.0 / 60.0)
 
     for i in range(365):
@@ -167,14 +166,13 @@ def test_calendrical_date():
 
 def test_interpolation():
     # values from Astronomical Algorithms page 25
-    interpolatedValue = Astronomical.interpolate(
+    interpolated_value_1 = Astronomical.interpolate(
         0.877366, 0.884226, 0.870531, 4.35 / 24
     )
+    interpolated_value_2 = Astronomical.interpolate(1, -1, 3, 0.6)
 
-    assert interpolatedValue == pytest.approx(0.876125, abs=1e-6)
-
-    i1 = Astronomical.interpolate(1, -1, 3, 0.6)
-    assert i1 == pytest.approx(2.2, abs=1e-6)
+    assert interpolated_value_1 == pytest.approx(0.876125, abs=1e-6)
+    assert interpolated_value_2 == pytest.approx(2.2, abs=1e-6)
 
 
 def test_angle_interpolation():
@@ -185,45 +183,33 @@ def test_angle_interpolation():
     assert i2 == pytest.approx(2.2, abs=1e-6)
 
 
-def test_julian_day():
+@pytest.mark.parametrize(
+    "year, month, day, expected",
+    [
+        (2010, 1, 2, 2455198.500000),
+        (2011, 2, 4, 2455596.500000),
+        (2012, 3, 6, 2455992.500000),
+        (2013, 4, 8, 2456390.500000),
+        (2014, 5, 10, 2456787.500000),
+        (2015, 6, 12, 2457185.500000),
+        (2016, 7, 14, 2457583.500000),
+        (2017, 8, 16, 2457981.500000),
+        (2018, 9, 18, 2458379.500000),
+        (2019, 10, 20, 2458776.500000),
+        (2020, 11, 22, 2459175.500000),
+        (2021, 12, 24, 2459572.500000),
+    ],
+)
+def test_julian_day(year, month, day, expected):
     # Comparison values generated from http://aa.usno.navy.mil/data/docs/JulianDate.php
 
-    assert CalendricalHelper.julian_day(2010, 1, 2) == pytest.approx(
-        2455198.500000, abs=1e-5
+    assert CalendricalHelper.julian_day(year, month, day) == pytest.approx(
+        expected, abs=1e-5
     )
-    assert CalendricalHelper.julian_day(2011, 2, 4) == pytest.approx(
-        2455596.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2012, 3, 6) == pytest.approx(
-        2455992.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2013, 4, 8) == pytest.approx(
-        2456390.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2014, 5, 10) == pytest.approx(
-        2456787.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2015, 6, 12) == pytest.approx(
-        2457185.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2016, 7, 14) == pytest.approx(
-        2457583.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2017, 8, 16) == pytest.approx(
-        2457981.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2018, 9, 18) == pytest.approx(
-        2458379.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2019, 10, 20) == pytest.approx(
-        2458776.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2020, 11, 22) == pytest.approx(
-        2459175.500000, abs=1e-5
-    )
-    assert CalendricalHelper.julian_day(2021, 12, 24) == pytest.approx(
-        2459572.500000, abs=1e-5
-    )
+
+
+def test_julian_day_with_hours_and_minutes():
+    # Comparison values generated from http://aa.usno.navy.mil/data/docs/JulianDate.php
 
     jdVal = 2457215.67708333
     assert CalendricalHelper.julian_day(2015, 7, 12, 4.25) == pytest.approx(
