@@ -8,9 +8,10 @@ setup(
     name="adhanpy",
     version="1.0.0",
     author="alphahm",
+    url="https://github.com/alphahm/adhanpy",
     description="An offline library calculating prayer times",
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[
