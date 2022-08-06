@@ -14,7 +14,7 @@ class TimeComponents:
     def from_float(cls, value):
         if math.isinf(value) or math.isnan(value):
             return None
-        
+
         minutes, seconds = divmod(value * 60 * 60, 60)
         hours, minutes = divmod(minutes, 60)
         return cls(int(hours), int(minutes), int(seconds))
