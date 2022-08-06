@@ -182,3 +182,38 @@ def test_time_for_prayer():
     assert prayer_times.maghrib == prayer_times.time_for_prayer(Prayer.MAGHRIB)
     assert prayer_times.isha == prayer_times.time_for_prayer(Prayer.ISHA)
     assert prayer_times.time_for_prayer(Prayer.NONE) is None
+
+
+def test_prayer_times_timezone_conversion():
+    # Arrange
+    calculation_method = CalculationMethod.MOON_SIGHTING_COMMITTEE
+    coordinates = (51.49799827422162, -0.1358135027951458)
+    format = "%I:%M %p"
+    tz = ZoneInfo("Europe/London")
+
+    # Winter time, UTC and GMT share the same time
+    date_winter = DateComponents(2022, 1, 1)
+
+    # Summer time, BST: UTC + 1
+    date_summer = DateComponents(2022, 8, 1)
+
+    # Act,  Assert
+    prayer_times = PrayerTimes(
+        coordinates, date_winter, calculation_method=calculation_method
+    )
+    assert prayer_times.fajr.strftime(format) == "06:25 AM"
+
+    prayer_times = PrayerTimes(
+        coordinates, date_winter, calculation_method=calculation_method, time_zone=tz
+    )
+    assert prayer_times.fajr.strftime(format) == "06:25 AM"
+
+    prayer_times = PrayerTimes(
+        coordinates, date_summer, calculation_method=calculation_method
+    )
+    assert prayer_times.fajr.strftime(format) == "02:37 AM"
+
+    prayer_times = PrayerTimes(
+        coordinates, date_summer, calculation_method=calculation_method, time_zone=tz
+    )
+    assert prayer_times.fajr.strftime(format) == "03:37 AM"
