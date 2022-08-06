@@ -15,6 +15,8 @@ Like the original project there is no external dependencies except for tests in 
 pip install adhanpy
 ```
 
+## Usage
+
 Create a `PrayerTimes` object by passing geo coodinates, datetime and either passing a calculation method:
 
 ```python
