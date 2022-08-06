@@ -69,7 +69,7 @@ def test_right_ascension_edge_case():
     coordinates = Coordinates(35 + 47.0 / 60.0, -78 - 39.0 / 60.0)
 
     for i in range(365):
-        time = SolarTime(_makeDateWithOffset(2016, 1, 1, i), coordinates)
+        time = SolarTime(_make_date_with_offset(2016, 1, 1, i), coordinates)
 
         if i > 0:
             # transit from one day to another should not differ more than one minute
@@ -257,7 +257,7 @@ def _time_string(when: float):
     return f"{components.hours}:{minutes:0>2d}"
 
 
-def _makeDateWithOffset(year: int, month: int, day: int, offset: int):
+def _make_date_with_offset(year: int, month: int, day: int, offset: int):
     date_time = datetime(year, month, day, tzinfo=timezone.utc)
 
     date_time_offset = date_time + timedelta(days=offset)
