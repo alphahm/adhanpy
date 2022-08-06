@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 import calendar
 from typing import Tuple
 from adhanpy.calculation.CalculationMethod import CalculationMethod
@@ -89,6 +90,7 @@ class PrayerTimes:
         date: datetime,
         calculation_method: CalculationMethod = None,
         calculation_parameters: CalculationParameters = None,
+        time_zone: ZoneInfo = None,
     ):
         """
         Arguments:
@@ -118,6 +120,7 @@ class PrayerTimes:
 
         self.coordinates = Coordinates(coordinates[0], coordinates[1])
         date_components = DateComponents.from_utc(date)
+        self.time_zone = time_zone
 
         prayer_date = datetime(
             date_components.year,
@@ -326,6 +329,9 @@ class PrayerTimes:
                 + timedelta(minutes=calculation_parameters.method_adjustments.isha)
             )
 
+        if time_zone is not None:
+            self._adjust_prayers_time_zone()
+
     def time_for_prayer(self, prayer: Prayer):
         if prayer == Prayer.FAJR:
             return self.fajr
@@ -341,3 +347,11 @@ class PrayerTimes:
             return self.isha
         else:
             return None
+
+    def _adjust_prayers_time_zone(self):
+        self.fajr = self.fajr.astimezone(self.time_zone)
+        self.sunrise = self.sunrise.astimezone(self.time_zone)
+        self.dhuhr = self.dhuhr.astimezone(self.time_zone)
+        self.asr = self.asr.astimezone(self.time_zone)
+        self.maghrib = self.maghrib.astimezone(self.time_zone)
+        self.isha = self.isha.astimezone(self.time_zone)
