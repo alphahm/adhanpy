@@ -1,8 +1,5 @@
 import pytest
-from datetime import datetime, timezone
 import adhanpy.util.FloatUtil as FloatUtil
-from adhanpy.util.TimeComponents import TimeComponents
-import adhanpy.util.CalendarUtil as CalendarUtil
 
 
 @pytest.mark.parametrize(
@@ -58,35 +55,3 @@ def test_unwind_angle(value, expected):
 )
 def test_closest_angle(angle, expected, tolerance):
     assert FloatUtil.closest_angle(angle) == pytest.approx(expected, abs=tolerance)
-
-
-@pytest.mark.parametrize(
-    "value, hours, minutes, seconds",
-    [
-        (15.199, 15, 11, 56),
-        (1.0084, 1, 0, 30),
-        (1.0083, 1, 0, 29),
-        (2.1, 2, 6, 0),
-        (3.5, 3, 30, 0),
-    ],
-)
-def test_TimeComponents(value, hours, minutes, seconds):
-    components = TimeComponents.from_float(value)
-    assert components is not None
-    assert components.hours == hours
-    assert components.minutes == minutes
-    assert components.seconds == seconds
-
-
-def test_minute_rounding():
-    comps1 = datetime(2015, 1, 1, 10, 2, 29, tzinfo=timezone.utc)
-    rounded1 = CalendarUtil.rounded_minute(comps1)
-
-    assert rounded1.minute == 2
-    assert rounded1.second == 0
-
-    comps2 = datetime(2015, 1, 1, 10, 2, 31)
-    rounded2 = CalendarUtil.rounded_minute(comps2)
-
-    assert rounded2.minute == 3
-    assert rounded2.second == 0

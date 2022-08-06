@@ -1,13 +1,9 @@
 import pytest
-from datetime import datetime, timezone, timedelta
 import adhanpy.astronomy.Astronomical as Astronomical
 import adhanpy.util.FloatUtil as FloatUtil
 import adhanpy.astronomy.CalendricalHelper as CalendricalHelper
 from adhanpy.astronomy.SolarCoordinates import SolarCoordinates
 from adhanpy.data.Coordinates import Coordinates
-from adhanpy.util.DateComponents import DateComponents
-from adhanpy.util.TimeComponents import TimeComponents
-from adhanpy.astronomy.SolarTime import SolarTime
 
 
 def test_solar_coordinates():
@@ -64,23 +60,6 @@ def test_solar_coordinates():
     assert ε == pytest.approx(23.4435694444, abs=1e-5)
 
 
-def test_right_ascension_edge_case():
-    coordinates = Coordinates(35 + 47.0 / 60.0, -78 - 39.0 / 60.0)
-
-    for i in range(365):
-        time = SolarTime(_make_date_with_offset(2016, 1, 1, i), coordinates)
-
-        if i > 0:
-            # transit from one day to another should not differ more than one minute
-            assert abs(time.transit - previous_time.transit) < (1.0 / 60.0)
-
-            # sunrise and sunset from one day to another should not differ more than two minutes
-            assert abs(time.sunrise - previous_time.sunrise) < (2.0 / 60.0)
-            assert abs(time.sunset - previous_time.sunset) < (2.0 / 60.0)
-
-        previous_time = time
-
-
 def test_altitude_of_celestial_body():
     φ = 38 + (55 / 60.0) + (17.0 / 3600)
     δ = -6 - (43 / 60.0) - (11.61 / 3600)
@@ -127,43 +106,6 @@ def test_transit_and_hour_angle():
     assert rise == pytest.approx(0.51766, abs=1e-5)
 
 
-def test_solar_time():
-    """
-    Comparison values generated from
-    http://aa.usno.navy.mil/rstt/onedaytable?form=1&ID=AA&year=2015&month=7&day=12&state=NC&place=raleigh
-    """
-
-    coordinates = Coordinates(35 + 47.0 / 60.0, -78 - 39.0 / 60.0)
-    solar = SolarTime(DateComponents(2015, 7, 12), coordinates)
-
-    transit = solar.transit
-    sunrise = solar.sunrise
-    sunset = solar.sunset
-    twilight_start = solar.hour_angle(-6, False)
-    twilight_end = solar.hour_angle(-6, True)
-    invalid = solar.hour_angle(-36, True)
-
-    assert _time_string(twilight_start) == "9:38"
-    assert _time_string(sunrise) == "10:08"
-    assert _time_string(transit) == "17:20"
-    assert _time_string(sunset) == "24:32"
-    assert _time_string(twilight_end) == "25:02"
-    assert _time_string(invalid) == ""
-
-
-def test_calendrical_date():
-    # generated from http://aa.usno.navy.mil/data/docs/RS_OneYear.php for KUKUIHAELE, HAWAII
-    coordinates = Coordinates(20 + 7.0 / 60.0, -155.0 - 34.0 / 60.0)
-    day1solar = SolarTime(DateComponents(2015, 4, 2), coordinates)
-    day2solar = SolarTime(DateComponents(2015, 4, 3), coordinates)
-
-    day1 = day1solar.sunrise
-    day2 = day2solar.sunrise
-
-    assert _time_string(day1) == "16:15"
-    assert _time_string(day2) == "16:14"
-
-
 def test_interpolation():
     # values from Astronomical Algorithms page 25
     interpolated_value_1 = Astronomical.interpolate(
@@ -181,70 +123,3 @@ def test_angle_interpolation():
 
     i2 = Astronomical.interpolate_angles(1, 359, 3, 0.6)
     assert i2 == pytest.approx(2.2, abs=1e-6)
-
-
-@pytest.mark.parametrize(
-    "year, month, day, expected",
-    [
-        (2010, 1, 2, 2455198.500000),
-        (2011, 2, 4, 2455596.500000),
-        (2012, 3, 6, 2455992.500000),
-        (2013, 4, 8, 2456390.500000),
-        (2014, 5, 10, 2456787.500000),
-        (2015, 6, 12, 2457185.500000),
-        (2016, 7, 14, 2457583.500000),
-        (2017, 8, 16, 2457981.500000),
-        (2018, 9, 18, 2458379.500000),
-        (2019, 10, 20, 2458776.500000),
-        (2020, 11, 22, 2459175.500000),
-        (2021, 12, 24, 2459572.500000),
-    ],
-)
-def test_julian_day(year, month, day, expected):
-    # Comparison values generated from http://aa.usno.navy.mil/data/docs/JulianDate.php
-
-    assert CalendricalHelper.julian_day(year, month, day) == pytest.approx(
-        expected, abs=1e-5
-    )
-
-
-def test_julian_day_with_hours_and_minutes():
-    # Comparison values generated from http://aa.usno.navy.mil/data/docs/JulianDate.php
-
-    jdVal = 2457215.67708333
-    assert CalendricalHelper.julian_day(2015, 7, 12, 4.25) == pytest.approx(
-        jdVal, abs=1e-6
-    )
-    assert CalendricalHelper.julian_day(2015, 7, 12, 4, 15) == pytest.approx(
-        jdVal, abs=1e-6
-    )
-    assert CalendricalHelper.julian_day(2015, 7, 12, 8.0) == pytest.approx(
-        2457215.833333, abs=1e-6
-    )
-    assert CalendricalHelper.julian_day(1992, 10, 13, 0.0) == pytest.approx(
-        2448908.5, abs=1e-6
-    )
-
-
-def test_julian_hours():
-    j1 = CalendricalHelper.julian_day(2010, 1, 3)
-    j2 = CalendricalHelper.julian_day(2010, 1, 1, 48)
-
-    assert j1 == pytest.approx(j2, abs=1e-7)
-
-
-def _time_string(when: float):
-    components = TimeComponents.from_float(when)
-    if components is None:
-        return ""
-
-    minutes = int((components.minutes + round(components.seconds / 60.0)))
-
-    return f"{components.hours}:{minutes:0>2d}"
-
-
-def _make_date_with_offset(year: int, month: int, day: int, offset: int):
-    date_time = datetime(year, month, day, tzinfo=timezone.utc)
-
-    date_time_offset = date_time + timedelta(days=offset)
-    return DateComponents.from_utc(date_time_offset)
