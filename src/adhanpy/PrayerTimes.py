@@ -182,9 +182,7 @@ class PrayerTimes:
                     and self.coordinates.latitude >= 55
                 ):
                     night_fraction = int(night / 7000)
-                    temp_isha = sunset_components + timedelta(
-                        seconds=night_fraction
-                    )
+                    temp_isha = sunset_components + timedelta(seconds=night_fraction)
 
                 if (
                     calculation_parameters.method

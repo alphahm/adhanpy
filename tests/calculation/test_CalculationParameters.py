@@ -54,3 +54,13 @@ def test_night_portion(
     assert parameters.night_portions().isha == pytest.approx(
         night_portions_isha, abs=1e-3
     )
+
+
+def test_night_portion_with_invalid_high_latitude_rule():
+    # Arrange
+    parameters = CalculationParameters(fajr_angle=18, isha_angle=18)
+    parameters.high_latitude_rule = None
+
+    # Act, Assert
+    with pytest.raises(ValueError, match="Invalid high latitude rule"):
+        parameters.night_portions()
