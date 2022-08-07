@@ -215,43 +215,41 @@ class PrayerTimes:
             self.isha = None
         else:
             # Assign final times to public struct members with all offsets
-            self.fajr = rounded_minute(
-                (temp_fajr + timedelta(minutes=calculation_parameters.adjustments.fajr))
-                + timedelta(minutes=calculation_parameters.method_adjustments.fajr)
+            self.fajr = self._rounded_minute(
+                calculation_parameters.adjustments,
+                calculation_parameters.method_adjustments,
+                "fajr",
+                temp_fajr,
             )
-
-            self.sunrise = rounded_minute(
-                (
-                    temp_sunrise
-                    + timedelta(minutes=calculation_parameters.adjustments.sunrise)
-                )
-                + timedelta(minutes=calculation_parameters.method_adjustments.sunrise)
+            self.sunrise = self._rounded_minute(
+                calculation_parameters.adjustments,
+                calculation_parameters.method_adjustments,
+                "sunrise",
+                temp_sunrise,
             )
-
-            self.dhuhr = rounded_minute(
-                (
-                    temp_dhuhr
-                    + timedelta(minutes=calculation_parameters.adjustments.dhuhr)
-                )
-                + timedelta(minutes=calculation_parameters.method_adjustments.dhuhr)
+            self.dhuhr = self._rounded_minute(
+                calculation_parameters.adjustments,
+                calculation_parameters.method_adjustments,
+                "dhuhr",
+                temp_dhuhr,
             )
-
-            self.asr = rounded_minute(
-                (temp_asr + timedelta(minutes=calculation_parameters.adjustments.asr))
-                + timedelta(minutes=calculation_parameters.method_adjustments.asr)
+            self.asr = self._rounded_minute(
+                calculation_parameters.adjustments,
+                calculation_parameters.method_adjustments,
+                "asr",
+                temp_asr,
             )
-
-            self.maghrib = rounded_minute(
-                (
-                    temp_maghrib
-                    + timedelta(minutes=calculation_parameters.adjustments.maghrib)
-                )
-                + timedelta(minutes=calculation_parameters.method_adjustments.maghrib)
+            self.maghrib = self._rounded_minute(
+                calculation_parameters.adjustments,
+                calculation_parameters.method_adjustments,
+                "maghrib",
+                temp_maghrib,
             )
-
-            self.isha = rounded_minute(
-                (temp_isha + timedelta(minutes=calculation_parameters.adjustments.isha))
-                + timedelta(minutes=calculation_parameters.method_adjustments.isha)
+            self.isha = self._rounded_minute(
+                calculation_parameters.adjustments,
+                calculation_parameters.method_adjustments,
+                "isha",
+                temp_isha,
             )
 
         if time_zone is not None:
@@ -272,6 +270,15 @@ class PrayerTimes:
             case Prayer.ISHA:
                 return self.isha
         return None
+
+    def _rounded_minute(
+        self, adjustments, method_adjustments, prayer_name, temp_prayer
+    ):
+        prayer_adjustments = getattr(adjustments, prayer_name)
+        method_prayer_adjustments = getattr(method_adjustments, prayer_name)
+        return rounded_minute(
+            (temp_prayer + timedelta(minutes=prayer_adjustments)) + timedelta(minutes=method_prayer_adjustments)
+        )
 
     def _adjust_prayers_time_zone(self):
         self.fajr = self.fajr.astimezone(self.time_zone)

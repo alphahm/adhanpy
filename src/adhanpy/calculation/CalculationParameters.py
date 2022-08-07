@@ -58,7 +58,7 @@ class CalculationParameters:
                 return NightPortions(1.0 / 7.0, 1.0 / 7.0)
             case HighLatitudeRule.TWILIGHT_ANGLE:
                 return NightPortions(self.fajr_angle / 60.0, self.isha_angle / 60.0)
-                
+
         raise ValueError("Invalid high latitude rule")
 
     def _set_parameters_using_method(self, calculation_method: CalculationMethod):
