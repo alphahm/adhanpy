@@ -1,6 +1,8 @@
+from __future__ import annotations
 import math
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 from adhanpy.util.DateComponents import DateComponents
 
 
@@ -11,7 +13,7 @@ class TimeComponents:
     seconds: int
 
     @classmethod
-    def from_float(cls, value):
+    def from_float(cls, value: float) -> Optional[TimeComponents]:
         if math.isinf(value) or math.isnan(value):
             return None
 

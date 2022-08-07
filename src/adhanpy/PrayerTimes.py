@@ -29,6 +29,7 @@ class PrayerTimes:
             coordinates: (latitude, longitude)
             date: DateComponents
             calculation_parameters: CalculationParameters
+            time_zone: example ZoneInfo("Europe/London")
         Returns:
             PrayerTimes object with UTC datetimes for fajr, sunrise, dhuhr, asr, maghrib and isha
         """
@@ -94,25 +95,21 @@ class PrayerTimes:
             tomorrow_solar_time.sunrise
         )
 
-        error = False
-        if (
+        error = (
             transit is None
             or sunrise_components is None
             or sunset_components is None
             or tomorrow_sunrise_components is None
-        ):
-            error = True
+        )
 
         if error is False:
             temp_dhuhr = transit
             temp_sunrise = sunrise_components
             temp_maghrib = sunset_components
 
-            time_components = TimeComponents.from_float(
+            if time_components := TimeComponents.from_float(
                 solar_time.afternoon(calculation_parameters.madhab.get_shadow_length())
-            )
-
-            if time_components is not None:
+            ):
                 temp_asr = time_components.date_components(date_components)
 
             # get night length
@@ -125,11 +122,9 @@ class PrayerTimes:
                 - sunset_components.timestamp() * 1000
             )
 
-            time_components = TimeComponents.from_float(
+            if time_components := TimeComponents.from_float(
                 solar_time.hour_angle(-calculation_parameters.fajr_angle, False)
-            )
-
-            if time_components is not None:
+            ):
                 temp_fajr = time_components.date_components(date_components)
 
             if (
@@ -186,9 +181,9 @@ class PrayerTimes:
                     == CalculationMethod.MOON_SIGHTING_COMMITTEE
                     and self.coordinates.latitude >= 55
                 ):
-                    night_fraction = night / 7000
+                    night_fraction = int(night / 7000)
                     temp_isha = sunset_components + timedelta(
-                        seconds=int(night_fraction)
+                        seconds=night_fraction
                     )
 
                 if (
