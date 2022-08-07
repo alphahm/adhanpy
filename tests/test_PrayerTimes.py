@@ -163,27 +163,6 @@ def test_moon_sighting_method_high_lat():
     assert prayer_times.isha.astimezone(tz).strftime(format) == "05:02 PM"
 
 
-def test_time_for_prayer():
-    # Arrange
-    date = DateComponents(2016, 7, 1)
-    parameters = CalculationParameters(method=CalculationMethod.MUSLIM_WORLD_LEAGUE)
-    parameters.madhab = Madhab.HANAFI
-    parameters.high_latitude_rule = HighLatitudeRule.TWILIGHT_ANGLE
-    coordinates = (59.9094, 10.7349)
-
-    # Act
-    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=parameters)
-
-    # Assert
-    assert prayer_times.fajr == prayer_times.time_for_prayer(Prayer.FAJR)
-    assert prayer_times.sunrise == prayer_times.time_for_prayer(Prayer.SUNRISE)
-    assert prayer_times.dhuhr == prayer_times.time_for_prayer(Prayer.DHUHR)
-    assert prayer_times.asr == prayer_times.time_for_prayer(Prayer.ASR)
-    assert prayer_times.maghrib == prayer_times.time_for_prayer(Prayer.MAGHRIB)
-    assert prayer_times.isha == prayer_times.time_for_prayer(Prayer.ISHA)
-    assert prayer_times.time_for_prayer(Prayer.NONE) is None
-
-
 def test_prayer_times_timezone_conversion():
     # Arrange
     calculation_method = CalculationMethod.MOON_SIGHTING_COMMITTEE
