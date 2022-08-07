@@ -22,7 +22,7 @@ def days_since_solstice(day_of_year: int, year: int, latitude: float) -> int:
 
 
 def season_adjusted_morning_twilight(
-    latitude: float, day: int, year: int, sunrise: datetime
+    latitude: float, day_of_year: int, year: int, sunrise: datetime
 ):
     a = 75 + ((28.65 / 55.0) * abs(latitude))
     b = 75 + ((19.44 / 55.0) * abs(latitude))
@@ -30,7 +30,7 @@ def season_adjusted_morning_twilight(
     d = 75 + ((48.10 / 55.0) * abs(latitude))
 
     # final double adjustment;
-    dyy = days_since_solstice(day, year, latitude)
+    dyy = days_since_solstice(day_of_year, year, latitude)
 
     if dyy < 91:
         adjustment = a + (b - a) / 91.0 * dyy

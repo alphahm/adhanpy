@@ -48,7 +48,8 @@ class PrayerTimes:
                 method=calculation_method
             )
 
-        self.coordinates = Coordinates(coordinates[0], coordinates[1])
+        latitude, longitude = coordinates
+        self.coordinates = Coordinates(latitude, longitude)
         self._date_components = DateComponents.from_utc(date)
         self.time_zone = time_zone
 
@@ -145,7 +146,9 @@ class PrayerTimes:
         else:
             portion = self.night_portions.fajr
             night_fraction = int(portion * self.night_length / 1000)
-            safe_fajr = self._sunrise_components + timedelta(seconds=-1 * night_fraction)
+            safe_fajr = self._sunrise_components + timedelta(
+                seconds=-1 * night_fraction
+            )
 
         if temp_fajr is None or temp_fajr < safe_fajr:
             temp_fajr = safe_fajr

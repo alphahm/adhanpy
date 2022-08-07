@@ -4,8 +4,6 @@ from adhanpy.calculation.CalculationParameters import CalculationParameters
 from adhanpy.calculation.Madhab import Madhab
 from adhanpy.PrayerTimes import PrayerTimes
 from adhanpy.calculation.PrayerAdjustments import PrayerAdjustments
-from adhanpy.data.Prayer import Prayer
-from adhanpy.calculation.HighLatitudeRule import HighLatitudeRule
 from zoneinfo import ZoneInfo
 
 
@@ -142,8 +140,8 @@ def test_moon_sighting_method():
 
 
 def test_moon_sighting_method_high_lat():
-    # Arrange
     # Values from http://www.moonsighting.com/pray.php
+    # Arrange
     date = DateComponents(2016, 1, 1)
     parameters = CalculationParameters(method=CalculationMethod.MOON_SIGHTING_COMMITTEE)
     parameters.madhab = Madhab.HANAFI
@@ -161,6 +159,36 @@ def test_moon_sighting_method_high_lat():
     assert prayer_times.asr.astimezone(tz).strftime(format) == "01:36 PM"
     assert prayer_times.maghrib.astimezone(tz).strftime(format) == "03:25 PM"
     assert prayer_times.isha.astimezone(tz).strftime(format) == "05:02 PM"
+
+
+def test_moon_sighting_method_high_lat_different_times_of_year():
+    # Values from http://www.moonsighting.com/pray.php
+    # Arrange
+    params = CalculationParameters(method=CalculationMethod.MOON_SIGHTING_COMMITTEE)
+    coordinates = (59.9094, 10.7349)
+    format = "%I:%M %p"
+    tz = ZoneInfo("Europe/Oslo")
+
+    # Act, Assert
+    date = DateComponents(2015, 7, 12)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=params)
+    assert prayer_times.fajr.astimezone(tz).strftime(format) == "03:26 AM"
+
+    date = DateComponents(2015, 10, 12)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=params)
+    assert prayer_times.dhuhr.astimezone(tz).strftime(format) == "01:09 PM"
+
+    date = DateComponents(2015, 4, 12)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=params)
+    assert prayer_times.asr.astimezone(tz).strftime(format) == "05:04 PM"
+
+    date = DateComponents(2015, 5, 12)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=params)
+    assert prayer_times.maghrib.astimezone(tz).strftime(format) == "09:43 PM"
+
+    date = DateComponents(2015, 9, 12)
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=params)
+    assert prayer_times.isha.astimezone(tz).strftime(format) == "09:03 PM"
 
 
 def test_prayer_times_timezone_conversion():
