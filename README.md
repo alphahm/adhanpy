@@ -44,8 +44,8 @@ print(parameters.fajr_angle)
 # 18.0 (the fajr_angle argument has been ignored)
 ```
 
-Times are returned in UTC time via datetime objects, to convert them to a different time zone, for
-convenience it is possible to directly pass a ZoneInfo object to PrayerTimes:
+Times are returned in UTC time via datetime objects, for convenience it is possible to directly pass
+a ZoneInfo object to PrayerTimes:
 
 ```python
 london_zone = ZoneInfo("Europe/London")
