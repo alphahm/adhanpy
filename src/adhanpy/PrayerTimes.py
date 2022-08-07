@@ -260,20 +260,20 @@ class PrayerTimes:
             self._adjust_prayers_time_zone()
 
     def time_for_prayer(self, prayer: Prayer):
-        if prayer == Prayer.FAJR:
-            return self.fajr
-        elif prayer == Prayer.SUNRISE:
-            return self.sunrise
-        elif prayer == Prayer.DHUHR:
-            return self.dhuhr
-        elif prayer == Prayer.ASR:
-            return self.asr
-        elif prayer == Prayer.MAGHRIB:
-            return self.maghrib
-        elif prayer == Prayer.ISHA:
-            return self.isha
-        else:
-            return None
+        match prayer:
+            case Prayer.FAJR:
+                return self.fajr
+            case Prayer.SUNRISE:
+                return self.sunrise
+            case Prayer.DHUHR:
+                return self.dhuhr
+            case Prayer.ASR:
+                return self.asr
+            case Prayer.MAGHRIB:
+                return self.maghrib
+            case Prayer.ISHA:
+                return self.isha
+        return None
 
     def _adjust_prayers_time_zone(self):
         self.fajr = self.fajr.astimezone(self.time_zone)
