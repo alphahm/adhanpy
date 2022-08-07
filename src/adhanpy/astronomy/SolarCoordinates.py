@@ -22,8 +22,8 @@ class SolarCoordinates:
         Ω = ascending_lunar_node_longitude(T)
         λ = math.radians(apparent_solar_longitude(T, L0))
         θ0 = mean_sidereal_time(T)
-        ΔΨ = nutation_in_longitude(T, L0, Lp, Ω)
-        Δε = nutation_in_obliquity(T, L0, Lp, Ω)
+        ΔΨ = nutation_in_longitude(L0, Lp, Ω)
+        Δε = nutation_in_obliquity(L0, Lp, Ω)
         ε0 = mean_obliquity_of_the_ecliptic(T)
         εapp = math.radians(apparent_obliquity_of_the_ecliptic(T, ε0))
 

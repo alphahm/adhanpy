@@ -45,8 +45,8 @@ def test_solar_coordinates():
     ε0 = Astronomical.mean_obliquity_of_the_ecliptic(T)
     L0 = Astronomical.mean_solar_longitude(T)
     Lp = Astronomical.mean_lunar_longitude(T)
-    ΔΨ = Astronomical.nutation_in_longitude(T, L0, Lp, Ω)
-    Δε = Astronomical.nutation_in_obliquity(T, L0, Lp, Ω)
+    ΔΨ = Astronomical.nutation_in_longitude(L0, Lp, Ω)
+    Δε = Astronomical.nutation_in_obliquity(L0, Lp, Ω)
     ε = ε0 + Δε
 
     assert θ0 == pytest.approx(197.693195, abs=1e-6)

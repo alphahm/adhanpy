@@ -66,7 +66,7 @@ def mean_sidereal_time(T: float) -> float:
     return unwind_angle(θ)
 
 
-def nutation_in_longitude(T: float, L0: float, Lp: float, Ω: float) -> float:
+def nutation_in_longitude(L0: float, Lp: float, Ω: float) -> float:
     # Equation from Astronomical Algorithms page 144
     term1 = (-17.2 / 3600) * math.sin(math.radians(Ω))
     term2 = (1.32 / 3600) * math.sin(2 * math.radians(L0))
@@ -75,7 +75,7 @@ def nutation_in_longitude(T: float, L0: float, Lp: float, Ω: float) -> float:
     return term1 - term2 - term3 + term4
 
 
-def nutation_in_obliquity(T: float, L0: float, Lp: float, Ω: float) -> float:
+def nutation_in_obliquity(L0: float, Lp: float, Ω: float) -> float:
     # Equation from Astronomical Algorithms page 144
     term1 = (9.2 / 3600) * math.cos(math.radians(Ω))
     term2 = (0.57 / 3600) * math.cos(2 * math.radians(L0))
