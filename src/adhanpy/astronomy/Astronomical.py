@@ -3,7 +3,7 @@ from adhanpy.util.FloatUtil import closest_angle, unwind_angle, normalize_with_b
 import math
 
 
-def mean_solar_longitude(T):
+def mean_solar_longitude(T: float) -> float:
     # Equation from Astronomical Algorithms page 163
     term1 = 280.4664567
     term2 = 36000.76983 * T
@@ -12,7 +12,7 @@ def mean_solar_longitude(T):
     return unwind_angle(L0)
 
 
-def mean_lunar_longitude(T):
+def mean_lunar_longitude(T: float) -> float:
     # Equation from Astronomical Algorithms page 144
     term1 = 218.3165
     term2 = 481267.8813 * T
@@ -20,7 +20,7 @@ def mean_lunar_longitude(T):
     return unwind_angle(Lp)
 
 
-def ascending_lunar_node_longitude(T):
+def ascending_lunar_node_longitude(T: float) -> float:
     # Equation from Astronomical Algorithms page 144
     term1 = 125.04452
     term2 = 1934.136261 * T
@@ -30,14 +30,14 @@ def ascending_lunar_node_longitude(T):
     return unwind_angle(Ω)
 
 
-def apparent_solar_longitude(T, L0):
+def apparent_solar_longitude(T: float, L0: float) -> float:
     longitude = L0 + solar_equation_of_the_center(T, mean_solar_anomaly(T))
     Ω = 125.04 - (1934.136 * T)
     λ = longitude - 0.00569 - (0.00478 * math.sin(math.radians(Ω)))
     return unwind_angle(λ)
 
 
-def solar_equation_of_the_center(T, M):
+def solar_equation_of_the_center(T: float, M: float) -> float:
     # Equation from Astronomical Algorithms page 164
     Mrad = math.radians(M)
     term1 = (1.914602 - (0.004817 * T) - (0.000014 * (T**2))) * math.sin(Mrad)
@@ -46,7 +46,7 @@ def solar_equation_of_the_center(T, M):
     return term1 + term2 + term3
 
 
-def mean_solar_anomaly(T):
+def mean_solar_anomaly(T: float) -> float:
     # Equation from Astronomical Algorithms page 163
     term1 = 357.52911
     term2 = 35999.05029 * T
@@ -55,7 +55,7 @@ def mean_solar_anomaly(T):
     return unwind_angle(M)
 
 
-def mean_sidereal_time(T):
+def mean_sidereal_time(T: float) -> float:
     # Equation from Astronomical Algorithms page 165
     JD = (T * 36525) + 2451545.0
     term1 = 280.46061837
@@ -66,7 +66,7 @@ def mean_sidereal_time(T):
     return unwind_angle(θ)
 
 
-def nutation_in_longitude(T, L0, Lp, Ω):
+def nutation_in_longitude(T: float, L0: float, Lp: float, Ω: float) -> float:
     # Equation from Astronomical Algorithms page 144
     term1 = (-17.2 / 3600) * math.sin(math.radians(Ω))
     term2 = (1.32 / 3600) * math.sin(2 * math.radians(L0))
@@ -75,7 +75,7 @@ def nutation_in_longitude(T, L0, Lp, Ω):
     return term1 - term2 - term3 + term4
 
 
-def nutation_in_obliquity(T, L0, Lp, Ω):
+def nutation_in_obliquity(T: float, L0: float, Lp: float, Ω: float) -> float:
     # Equation from Astronomical Algorithms page 144
     term1 = (9.2 / 3600) * math.cos(math.radians(Ω))
     term2 = (0.57 / 3600) * math.cos(2 * math.radians(L0))
@@ -84,7 +84,7 @@ def nutation_in_obliquity(T, L0, Lp, Ω):
     return term1 + term2 + term3 - term4
 
 
-def mean_obliquity_of_the_ecliptic(T):
+def mean_obliquity_of_the_ecliptic(T: float) -> float:
     # Equation from Astronomical Algorithms page 147
     term1 = 23.439291
     term2 = 0.013004167 * T
@@ -93,13 +93,13 @@ def mean_obliquity_of_the_ecliptic(T):
     return term1 - term2 - term3 + term4
 
 
-def apparent_obliquity_of_the_ecliptic(T, ε0):
+def apparent_obliquity_of_the_ecliptic(T: float, ε0: float) -> float:
     # Equation from Astronomical Algorithms page 165
     O = 125.04 - (1934.136 * T)
     return ε0 + (0.00256 * math.cos(math.radians(O)))
 
 
-def altitude_of_celestial_body(φ, δ, H):
+def altitude_of_celestial_body(φ: float, δ: float, H: float) -> float:
     # Equation from Astronomical Algorithms page 93
     term1 = math.sin(math.radians(φ)) * math.sin(math.radians(δ))
     term2 = (
@@ -110,13 +110,15 @@ def altitude_of_celestial_body(φ, δ, H):
     return math.degrees(math.asin(term1 + term2))
 
 
-def approximate_transit(L, Θ0, α2):
+def approximate_transit(L: float, Θ0: float, α2: float) -> float:
     # Equation from page Astronomical Algorithms 102
     Lw = L * -1
     return normalize_with_bound((α2 + Lw - Θ0) / 360, 1)
 
 
-def corrected_transit(m0, L, Θ0, α2, α1, α3):
+def corrected_transit(
+    m0: float, L: float, Θ0: float, α2: float, α1: float, α3: float
+) -> float:
     # Equation from page Astronomical Algorithms 102
     Lw = L * -1
     θ = unwind_angle(Θ0 + (360.985647 * m0))
@@ -126,7 +128,7 @@ def corrected_transit(m0, L, Θ0, α2, α1, α3):
     return (m0 + Δm) * 24
 
 
-def interpolate(y2, y1, y3, n):
+def interpolate(y2: float, y1: float, y3: float, n: float) -> float:
     # Equation from Astronomical Algorithms page 24
     a = y2 - y1
     b = y3 - y2
@@ -134,7 +136,7 @@ def interpolate(y2, y1, y3, n):
     return y2 + ((n / 2) * (a + b + (n * c)))
 
 
-def interpolate_angles(y2, y1, y3, n):
+def interpolate_angles(y2: float, y1: float, y3: float, n: float) -> float:
     # Equation from Astronomical Algorithms page 24
     a = unwind_angle(y2 - y1)
     b = unwind_angle(y3 - y2)
@@ -143,8 +145,18 @@ def interpolate_angles(y2, y1, y3, n):
 
 
 def corrected_hour_angle(
-    m0, h0, coordinates: Coordinates, afterTransit: bool, Θ0, α2, α1, α3, δ2, δ1, δ3
-):
+    m0: float,
+    h0: float,
+    coordinates: Coordinates,
+    afterTransit: bool,
+    Θ0: float,
+    α2: float,
+    α1: float,
+    α3: float,
+    δ2: float,
+    δ1: float,
+    δ3: float,
+) -> float:
     # Equation from page Astronomical Algorithms 102
     Lw = coordinates.longitude * -1
     term1 = math.sin(math.radians(h0)) - (
