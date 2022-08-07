@@ -49,42 +49,42 @@ class PrayerTimes:
             )
 
         self.coordinates = Coordinates(coordinates[0], coordinates[1])
-        self.date_components = DateComponents.from_utc(date)
+        self._date_components = DateComponents.from_utc(date)
         self.time_zone = time_zone
 
-        self.prayer_date = datetime(
-            self.date_components.year,
-            self.date_components.month,
-            self.date_components.day,
+        self._prayer_date = datetime(
+            self._date_components.year,
+            self._date_components.month,
+            self._date_components.day,
             tzinfo=timezone.utc,
         )
 
-        self.day_of_year = self.prayer_date.timetuple().tm_yday
+        self._day_of_year = self._prayer_date.timetuple().tm_yday
 
-        tomorrow_date = self.prayer_date + timedelta(days=1)
+        tomorrow_date = self._prayer_date + timedelta(days=1)
         tomorrow_date_components = DateComponents.from_utc(tomorrow_date)
 
-        self.solar_time = SolarTime(self.date_components, self.coordinates)
+        self._solar_time = SolarTime(self._date_components, self.coordinates)
 
-        time_components = TimeComponents.from_float(self.solar_time.transit)
+        time_components = TimeComponents.from_float(self._solar_time.transit)
         transit = (
             None
             if time_components is None
-            else time_components.date_components(self.date_components)
+            else time_components.date_components(self._date_components)
         )
 
-        time_components = TimeComponents.from_float(self.solar_time.sunrise)
-        self.sunrise_components = (
+        time_components = TimeComponents.from_float(self._solar_time.sunrise)
+        self._sunrise_components = (
             None
             if time_components is None
-            else time_components.date_components(self.date_components)
+            else time_components.date_components(self._date_components)
         )
 
-        time_components = TimeComponents.from_float(self.solar_time.sunset)
-        self.sunset_components = (
+        time_components = TimeComponents.from_float(self._solar_time.sunset)
+        self._sunset_components = (
             None
             if time_components is None
-            else time_components.date_components(self.date_components)
+            else time_components.date_components(self._date_components)
         )
 
         tomorrow_solar_time = SolarTime(tomorrow_date_components, self.coordinates)
@@ -94,13 +94,11 @@ class PrayerTimes:
 
         if (
             transit is None
-            or self.sunrise_components is None
-            or self.sunset_components is None
+            or self._sunrise_components is None
+            or self._sunset_components is None
             or tomorrow_sunrise_components is None
         ):
             raise RuntimeError
-
-        temp_maghrib = self.sunset_components
 
         # get night length
         tomorrow_sunrise = tomorrow_sunrise_components.date_components(
@@ -108,7 +106,7 @@ class PrayerTimes:
         )
         self.night_length = (
             tomorrow_sunrise.timestamp() * 1000
-            - self.sunset_components.timestamp() * 1000
+            - self._sunset_components.timestamp() * 1000
         )
         self.night_portions = self.calculation_parameters.night_portions()
 
@@ -118,36 +116,36 @@ class PrayerTimes:
         self._set_dhuhr(transit)
         self._set_asr()
         self._set_maghrib()
-        self._set_isha(temp_maghrib)
+        self._set_isha(self._sunset_components)
 
         self._adjust_prayers_time_zone()
 
     def _set_fajr(self):
         temp_fajr = None
         if time_components := TimeComponents.from_float(
-            self.solar_time.hour_angle(-self.calculation_parameters.fajr_angle, False)
+            self._solar_time.hour_angle(-self.calculation_parameters.fajr_angle, False)
         ):
-            temp_fajr = time_components.date_components(self.date_components)
+            temp_fajr = time_components.date_components(self._date_components)
 
         if (
             self.calculation_parameters.method
             == CalculationMethod.MOON_SIGHTING_COMMITTEE
         ):
             if self.coordinates.latitude >= 55:
-                temp_fajr = self.sunrise_components + timedelta(
+                temp_fajr = self._sunrise_components + timedelta(
                     seconds=-1 * int(self.night_length / 7000)
                 )
 
             safe_fajr = season_adjusted_morning_twilight(
                 self.coordinates.latitude,
-                self.day_of_year,
-                self.prayer_date.year,
-                self.sunrise_components,
+                self._day_of_year,
+                self._prayer_date.year,
+                self._sunrise_components,
             )
         else:
             portion = self.night_portions.fajr
             night_fraction = int(portion * self.night_length / 1000)
-            safe_fajr = self.sunrise_components + timedelta(seconds=-1 * night_fraction)
+            safe_fajr = self._sunrise_components + timedelta(seconds=-1 * night_fraction)
 
         if temp_fajr is None or temp_fajr < safe_fajr:
             temp_fajr = safe_fajr
@@ -164,7 +162,7 @@ class PrayerTimes:
             self.calculation_parameters.adjustments,
             self.calculation_parameters.method_adjustments,
             "sunrise",
-            self.sunrise_components,
+            self._sunrise_components,
         )
 
     def _set_dhuhr(self, time):
@@ -177,12 +175,12 @@ class PrayerTimes:
 
     def _set_asr(self):
         if time_components := TimeComponents.from_float(
-            self.solar_time.afternoon(
+            self._solar_time.afternoon(
                 self.calculation_parameters.madhab.get_shadow_length()
             )
         ):
             if (
-                temp_asr := time_components.date_components(self.date_components)
+                temp_asr := time_components.date_components(self._date_components)
             ) is None:
                 raise RuntimeError
 
@@ -198,28 +196,28 @@ class PrayerTimes:
             self.calculation_parameters.adjustments,
             self.calculation_parameters.method_adjustments,
             "maghrib",
-            self.sunset_components,
+            self._sunset_components,
         )
 
-    def _set_isha(self, temp_maghrib):
+    def _set_isha(self, sunset):
         # Isha calculation with check against safe value
         temp_isha = None
         try:
             if self.calculation_parameters.isha_interval < 1:
                 raise ValueError("Isha interval is either not defined or less than 1.")
 
-            temp_isha = temp_maghrib + timedelta(
+            temp_isha = sunset + timedelta(
                 seconds=self.calculation_parameters.isha_interval * 60
             )
         except:
             timeComponents = TimeComponents.from_float(
-                self.solar_time.hour_angle(
+                self._solar_time.hour_angle(
                     -self.calculation_parameters.isha_angle, True
                 )
             )
 
             if timeComponents is not None:
-                temp_isha = timeComponents.date_components(self.date_components)
+                temp_isha = timeComponents.date_components(self._date_components)
 
             if (
                 self.calculation_parameters.method
@@ -227,7 +225,7 @@ class PrayerTimes:
                 and self.coordinates.latitude >= 55
             ):
                 night_fraction = int(self.night_length / 7000)
-                temp_isha = self.sunset_components + timedelta(seconds=night_fraction)
+                temp_isha = self._sunset_components + timedelta(seconds=night_fraction)
 
             if (
                 self.calculation_parameters.method
@@ -235,15 +233,15 @@ class PrayerTimes:
             ):
                 safe_isha = season_adjusted_evening_twilight(
                     self.coordinates.latitude,
-                    self.day_of_year,
-                    self.date_components.year,
-                    self.sunset_components,
+                    self._day_of_year,
+                    self._date_components.year,
+                    self._sunset_components,
                 )
             else:
                 portion = self.night_portions.isha
                 night_fraction = int(portion * self.night_length / 1000)
 
-                safe_isha = self.sunset_components + timedelta(
+                safe_isha = self._sunset_components + timedelta(
                     seconds=int(night_fraction)
                 )
 
