@@ -152,7 +152,7 @@ class PrayerTimes:
                 portion = night_portions.fajr
                 night_fraction = int(portion * night / 1000)
                 safe_fajr = sunrise_components + timedelta(
-                    seconds=-1 * int(night_fraction)
+                    seconds=-1 * night_fraction
                 )
 
             if temp_fajr is None or temp_fajr < safe_fajr:
