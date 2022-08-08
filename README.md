@@ -3,7 +3,8 @@
 This is a port of [batoulapps/adhan-java](https://github.com/batoulapps/adhan-java), a prayer times program, from Java to Python.
 As it stands the project reuses most of the structure of the original project but may differ through refactoring and in an effort
 to rewrite in a more pythonic way where it makes sense.
-Like the original project there is no external dependencies except for tests in development where [pytest](https://github.com/pytest-dev/pytest) is made use of.
+Like the original project there are no external dependencies except in development where [pytest](https://github.com/pytest-dev/pytest)
+and other development tools are made use of.
 
 ## Requirements
 
