@@ -1,6 +1,10 @@
+import math
+import pytest
 from adhanpy.util.DateComponents import DateComponents
 from adhanpy.calculation.CalculationMethod import CalculationMethod
 from adhanpy.calculation.CalculationParameters import CalculationParameters
+from adhanpy.astronomy.SolarTime import SolarTime
+from adhanpy.util.TimeComponents import TimeComponents
 from adhanpy.calculation.Madhab import Madhab
 from adhanpy.PrayerTimes import PrayerTimes
 from adhanpy.calculation.PrayerAdjustments import PrayerAdjustments
@@ -26,6 +30,53 @@ def test_PrayerTimes():
     assert prayer_times.asr.astimezone(tz).strftime(format) == "06:22 PM"
     assert prayer_times.maghrib.astimezone(tz).strftime(format) == "08:32 PM"
     assert prayer_times.isha.astimezone(tz).strftime(format) == "09:57 PM"
+
+
+def test_either_calculation_method_or_calculation_parameters_is_passed():
+    date = DateComponents(2015, 7, 12)
+    method = CalculationMethod.NORTH_AMERICA
+    params = CalculationParameters(method=method)
+    coordinates = (35.7750, -78.6336)
+
+    with pytest.raises(
+        ValueError,
+        match="Only one of calculation_method or calculation_parameters must be passed.",
+    ):
+        PrayerTimes(coordinates, date, method, params)
+
+
+def test_when_transit_or_sunrise_components_or_sunset_components_or_tomorrow_sunrise_components_is_none_it_should_raise_exception(
+    mocker,
+):
+    date = DateComponents(2015, 7, 12)
+    mocker.patch.object(TimeComponents, "from_float", lambda e: None)
+    method = CalculationMethod.NORTH_AMERICA
+    coordinates = (35.7750, -78.6336)
+
+    with pytest.raises(RuntimeError):
+        PrayerTimes(coordinates, date, method)
+
+
+def test_when_asr_is_not_set_raise_exception(mocker):
+    date = DateComponents(2015, 7, 12)
+    mocker.patch.object(SolarTime, "afternoon", lambda e, f: math.inf)
+    method = CalculationMethod.NORTH_AMERICA
+    coordinates = (35.7750, -78.6336)
+
+    with pytest.raises(RuntimeError):
+        PrayerTimes(coordinates, date, method)
+
+
+def test_prayer_times_with_method_with_isha_interval():
+    date = DateComponents(2022, 8, 8)
+    parameters = CalculationParameters(method=CalculationMethod.UMM_AL_QURA)
+    coordinates = (21.422510, 39.826168)
+
+    prayer_times = PrayerTimes(coordinates, date, calculation_parameters=parameters)
+
+    interval_maghrib_isha = prayer_times.isha - prayer_times.maghrib
+
+    assert interval_maghrib_isha.total_seconds() / 60 == parameters.isha_interval
 
 
 def test_offsets():
