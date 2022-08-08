@@ -96,7 +96,7 @@ pip install -e .
 
 MIT
 
-## Credits
+## Acknowledgments
 
-Credits go to the original author for the original implementation in java and other languages, especially the very complex astronomy
+Credits go to the author of the original implementation in Java and other languages, especially the very complex astronomy
 formulas.
