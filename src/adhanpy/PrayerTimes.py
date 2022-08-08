@@ -38,7 +38,7 @@ class PrayerTimes:
             calculation_parameters or calculation_method
         ):
             raise ValueError(
-                "Either calculation_method (CalculationMethod) or calculation_parameters (CalculationParameters) can be passed."
+                "Only one of calculation_method or calculation_parameters must be passed."
             )
 
         self.calculation_parameters = calculation_parameters
@@ -182,17 +182,17 @@ class PrayerTimes:
                 self.calculation_parameters.madhab.get_shadow_length()
             )
         ):
-            if (
-                temp_asr := time_components.date_components(self._date_components)
-            ) is None:
-                raise RuntimeError
-
-        self.asr = self._rounded_minute(
-            self.calculation_parameters.adjustments,
-            self.calculation_parameters.method_adjustments,
-            "asr",
-            temp_asr,
-        )
+            if temp_asr := time_components.date_components(self._date_components):
+                self.asr = self._rounded_minute(
+                    self.calculation_parameters.adjustments,
+                    self.calculation_parameters.method_adjustments,
+                    "asr",
+                    temp_asr,
+                )
+        try:
+            self.asr.hour
+        except:
+            raise RuntimeError
 
     def _set_maghrib(self):
         self.maghrib = self._rounded_minute(
@@ -251,12 +251,12 @@ class PrayerTimes:
             if temp_isha is None or temp_isha > safe_isha:
                 temp_isha = safe_isha
 
-            self.isha = self._rounded_minute(
-                self.calculation_parameters.adjustments,
-                self.calculation_parameters.method_adjustments,
-                "isha",
-                temp_isha,
-            )
+        self.isha = self._rounded_minute(
+            self.calculation_parameters.adjustments,
+            self.calculation_parameters.method_adjustments,
+            "isha",
+            temp_isha,
+        )
 
     def _rounded_minute(
         self, adjustments, method_adjustments, prayer_name, temp_prayer
