@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="adhanpy",
-    version="1.0.2",
+    version="1.0.3",
     author="alphahm",
     url="https://github.com/alphahm/adhanpy",
     description="An offline library calculating prayer times",
@@ -16,8 +16,6 @@ setup(
     package_dir={"": "src"},
     classifiers=[
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
