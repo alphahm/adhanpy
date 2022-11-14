@@ -14,3 +14,12 @@ def test_minute_rounding():
 
     assert rounded2.minute == 3
     assert rounded2.second == 0
+
+
+def test_rounding_when_second_is_greater_than_30_and_minute_is_59():
+    dt = datetime(2015, 1, 1, 10, 59, 31, tzinfo=timezone.utc)
+    rounded = CalendarUtil.rounded_minute(dt)
+
+    assert rounded.hour == 10
+    assert rounded.minute == 59
+    assert rounded.second == 0

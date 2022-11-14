@@ -3,12 +3,18 @@ from datetime import datetime
 
 def rounded_minute(when: datetime) -> datetime:
     """
-    Date and time with a rounded minute
-    This returns a date with the seconds rounded and added to the minute
-    when the date and time eturn the date and time with 0 seconds and
-    minutes including rounded seconds
+    Round the seconds of a datetime object to 0 or 1 minute
+    and add it to the datetime's minutes when possible or
+    drop the seconds
+    when: datetime object
+    return: datetime object with seconds rounded to the nearest minute
     """
     minute = when.minute
     second = when.second
-    rounded = when.replace(minute=int(minute + round(second / 60)), second=0)
+
+    try:
+        rounded = when.replace(minute=int(minute + round(second / 60)), second=0)
+    except ValueError:
+        rounded = when.replace(second=0)
+
     return rounded
