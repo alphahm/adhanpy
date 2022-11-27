@@ -51,70 +51,70 @@ class CalculationParameters:
             self.method = CalculationMethod.OTHER
 
     def night_portions(self) -> NightPortions:
-        match self.high_latitude_rule:
-            case HighLatitudeRule.MIDDLE_OF_THE_NIGHT:
-                return NightPortions(1.0 / 2.0, 1.0 / 2.0)
-            case HighLatitudeRule.SEVENTH_OF_THE_NIGHT:
-                return NightPortions(1.0 / 7.0, 1.0 / 7.0)
-            case HighLatitudeRule.TWILIGHT_ANGLE:
-                return NightPortions(self.fajr_angle / 60.0, self.isha_angle / 60.0)
+        if self.high_latitude_rule == HighLatitudeRule.MIDDLE_OF_THE_NIGHT:
+            return NightPortions(1.0 / 2.0, 1.0 / 2.0)
+
+        elif self.high_latitude_rule == HighLatitudeRule.SEVENTH_OF_THE_NIGHT:
+            return NightPortions(1.0 / 7.0, 1.0 / 7.0)
+
+        elif self.high_latitude_rule == HighLatitudeRule.TWILIGHT_ANGLE:
+            return NightPortions(self.fajr_angle / 60.0, self.isha_angle / 60.0)
 
         raise ValueError("Invalid high latitude rule")
 
     def _set_parameters_using_method(self, calculation_method: CalculationMethod):
         # set parmeters given calculation method
-        match calculation_method:
-            case CalculationMethod.MUSLIM_WORLD_LEAGUE:
-                self.fajr_angle = 18.0
-                self.isha_angle = 17.0
-                self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
+        if calculation_method == CalculationMethod.MUSLIM_WORLD_LEAGUE:
+            self.fajr_angle = 18.0
+            self.isha_angle = 17.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
-            case CalculationMethod.EGYPTIAN:
-                self.fajr_angle = 19.5
-                self.isha_angle = 17.5
-                self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
+        elif calculation_method == CalculationMethod.EGYPTIAN:
+            self.fajr_angle = 19.5
+            self.isha_angle = 17.5
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
-            case CalculationMethod.KARACHI:
-                self.fajr_angle = 18.0
-                self.isha_angle = 18.0
-                self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
+        elif calculation_method == CalculationMethod.KARACHI:
+            self.fajr_angle = 18.0
+            self.isha_angle = 18.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
-            case CalculationMethod.UMM_AL_QURA:
-                self.fajr_angle = 18.5
-                self.isha_interval = 90
+        elif calculation_method == CalculationMethod.UMM_AL_QURA:
+            self.fajr_angle = 18.5
+            self.isha_interval = 90
 
-            case CalculationMethod.DUBAI:
-                self.fajr_angle = 18.2
-                self.isha_angle = 18.2
-                self.method_adjustments = PrayerAdjustments(0, -3, 3, 3, 3, 0)
+        elif calculation_method == CalculationMethod.DUBAI:
+            self.fajr_angle = 18.2
+            self.isha_angle = 18.2
+            self.method_adjustments = PrayerAdjustments(0, -3, 3, 3, 3, 0)
 
-            case CalculationMethod.MOON_SIGHTING_COMMITTEE:
-                self.fajr_angle = 18.0
-                self.isha_angle = 18.0
-                self.method_adjustments = PrayerAdjustments(0, 0, 5, 0, 3, 0)
+        elif calculation_method == CalculationMethod.MOON_SIGHTING_COMMITTEE:
+            self.fajr_angle = 18.0
+            self.isha_angle = 18.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 5, 0, 3, 0)
 
-            case CalculationMethod.NORTH_AMERICA:
-                self.fajr_angle = 15.0
-                self.isha_angle = 15.0
-                self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
+        elif calculation_method == CalculationMethod.NORTH_AMERICA:
+            self.fajr_angle = 15.0
+            self.isha_angle = 15.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
-            case CalculationMethod.KUWAIT:
-                self.fajr_angle = 18.0
-                self.isha_angle = 17.5
+        elif calculation_method == CalculationMethod.KUWAIT:
+            self.fajr_angle = 18.0
+            self.isha_angle = 17.5
 
-            case CalculationMethod.QATAR:
-                self.fajr_angle = 18.0
-                self.isha_interval = 90
+        elif calculation_method == CalculationMethod.QATAR:
+            self.fajr_angle = 18.0
+            self.isha_interval = 90
 
-            case CalculationMethod.SINGAPORE:
-                self.fajr_angle = 20.0
-                self.isha_angle = 18.0
-                self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
+        elif calculation_method == CalculationMethod.SINGAPORE:
+            self.fajr_angle = 20.0
+            self.isha_angle = 18.0
+            self.method_adjustments = PrayerAdjustments(0, 0, 1, 0, 0, 0)
 
-            case CalculationMethod.UOIF:
-                self.fajr_angle = 12.0
-                self.isha_angle = 12.0
+        elif calculation_method == CalculationMethod.UOIF:
+            self.fajr_angle = 12.0
+            self.isha_angle = 12.0
 
-            case CalculationMethod.OTHER:
-                self.fajr_angle = 0.0
-                self.isha_angle = 0.0
+        elif calculation_method == CalculationMethod.OTHER:
+            self.fajr_angle = 0.0
+            self.isha_angle = 0.0
