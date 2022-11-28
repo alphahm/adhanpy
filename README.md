@@ -8,7 +8,7 @@ and other development tools are made use of.
 
 ## Requirements
 
-* Python >= 3.10
+* Python >= 3.9
 
 ## Installation
 
