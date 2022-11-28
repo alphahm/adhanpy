@@ -70,9 +70,3 @@ class CalculationMethod(Enum):
     UOIF
     Uses a Fajr angle of 12 and an Isha angle of 12
     """
-
-    OTHER = 11
-    """
-    The default value for CalculationParameters.method when initializing a
-    CalculationParameters object. Sets a Fajr angle of 0 and an Isha angle of 0.
-    """

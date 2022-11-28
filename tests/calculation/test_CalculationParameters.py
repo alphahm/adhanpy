@@ -18,7 +18,6 @@ from adhanpy.calculation.HighLatitudeRule import HighLatitudeRule
         (CalculationMethod.QATAR, 18, 0, 90),
         (CalculationMethod.SINGAPORE, 20, 18, 0),
         (CalculationMethod.UOIF, 12, 12, 0),
-        (CalculationMethod.OTHER, 0, 0, 0),
     ],
 )
 def test_calculation_method(calculation_method, fajr_angle, isha_angle, isha_interval):
