@@ -1,5 +1,8 @@
 # adhanpy
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
+![pytest](https://github.com/alphahm/adhanpy/actions/workflows/test.yml/badge.svg)
+
 This is a port of [batoulapps/adhan-java](https://github.com/batoulapps/adhan-java), a prayer times program, from Java to Python.
 As it stands the project reuses most of the structure of the original project but may differ through refactoring and in an effort
 to rewrite in a more pythonic way where it makes sense.
