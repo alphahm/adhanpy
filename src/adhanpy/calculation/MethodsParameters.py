@@ -3,6 +3,7 @@ from adhanpy.calculation.PrayerAdjustments import PrayerAdjustments
 
 
 methods_parameters = {
+    CalculationMethod.NONE: {},
     CalculationMethod.MUSLIM_WORLD_LEAGUE: {
         "fajr_angle": 18.0,
         "isha_angle": 17.0,
