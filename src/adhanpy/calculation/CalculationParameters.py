@@ -1,3 +1,4 @@
+from typing import Optional
 from adhanpy.calculation.CalculationMethod import CalculationMethod
 from adhanpy.calculation.MethodsParameters import methods_parameters
 from adhanpy.calculation.Madhab import Madhab
@@ -9,9 +10,9 @@ from adhanpy.data.NightPortions import NightPortions
 class CalculationParameters:
     def __init__(
         self,
-        method: CalculationMethod | None = None,
-        adjustments: PrayerAdjustments | None = None,
-        method_adjustments: PrayerAdjustments | None = None,
+        method: Optional[CalculationMethod] = None,
+        adjustments: Optional[PrayerAdjustments] = None,
+        method_adjustments: Optional[PrayerAdjustments] = None,
         isha_interval: int = 0,
         fajr_angle: float = 0.0,
         isha_angle: float = 0.0,
