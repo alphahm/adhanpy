@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="adhanpy",
-    version="1.0.4",
+    version="1.0.5",
     author="alphahm",
     url="https://github.com/alphahm/adhanpy",
     description="An offline library calculating prayer times",
