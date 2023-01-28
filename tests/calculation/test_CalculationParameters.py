@@ -63,3 +63,40 @@ def test_night_portion_with_invalid_high_latitude_rule():
     # Act, Assert
     with pytest.raises(ValueError, match="Invalid high latitude rule"):
         parameters.night_portions()
+
+
+def test_method_is_always_set():
+    # Arrange
+    params_method_none = CalculationParameters(
+        method=None, fajr_angle=18, isha_angle=18
+    )
+    params_no_method = CalculationParameters(fajr_angle=18, isha_angle=18)
+
+    # Act, Assert
+    assert params_method_none.method is CalculationMethod.NONE
+    assert params_no_method.method is CalculationMethod.NONE
+
+
+def test_when_method_is_not_other_parameters_are_not_overwritten():
+    # Arrange
+    params_method_none = CalculationParameters(method=None, fajr_angle=18)
+    params_no_method = CalculationParameters(
+        fajr_angle=18, isha_angle=18, isha_interval=90
+    )
+
+    # Act, Assert
+    assert params_method_none.fajr_angle == 18
+    assert params_no_method.fajr_angle == 18
+    assert params_no_method.isha_angle == 18
+    assert params_no_method.isha_interval == 90
+
+
+def test_method_has_precedence_over_other_parameters():
+    # Arrange
+    params = CalculationParameters(
+        method=CalculationMethod.MOON_SIGHTING_COMMITTEE, fajr_angle=10
+    )
+
+    # Act, Assert
+    # MOON_SIGHTING_COMMITTEE has a fajr_angle of 18 and should overwrite fajr_angle provided
+    assert params.fajr_angle == 18

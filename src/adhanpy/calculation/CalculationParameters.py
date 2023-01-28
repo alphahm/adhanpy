@@ -9,13 +9,13 @@ from adhanpy.data.NightPortions import NightPortions
 class CalculationParameters:
     def __init__(
         self,
-        method: CalculationMethod = None,
-        adjustments: PrayerAdjustments = None,
-        method_adjustments: PrayerAdjustments = None,
+        method: CalculationMethod | None = None,
+        adjustments: PrayerAdjustments | None = None,
+        method_adjustments: PrayerAdjustments | None = None,
         isha_interval: int = 0,
         fajr_angle: float = 0.0,
         isha_angle: float = 0.0,
-    ):
+    ) -> None:
         # The madhab used to calculate Asr
         self.madhab = Madhab.SHAFI
 
@@ -25,15 +25,18 @@ class CalculationParameters:
         # Minutes after Maghrib (if set, the time for Isha will be Maghrib plus isha_interval)
         self.isha_interval = isha_interval
 
-        # angle for calculating fajr
+        # fajr and isha angles
         self.fajr_angle = fajr_angle
-
-        # angle for calculating isha
         self.isha_angle = isha_angle
 
         # Used to optionally add or subtract a set amount of time from each prayer time
         self.adjustments = (
             adjustments if adjustments is not None else PrayerAdjustments()
+        )
+
+        # method is last assigned and has precedence and will overwrite other parameters
+        self.method = (
+            method if isinstance(method, CalculationMethod) else CalculationMethod.NONE
         )
 
         # Used for method adjustments
@@ -43,11 +46,7 @@ class CalculationParameters:
             else PrayerAdjustments()
         )
 
-        # The method used to do the calculation
-        # method is last to be assigned, it has precedence and will overwrite some of the other parameters
-        if isinstance(method, CalculationMethod):
-            self.method = method
-            self._set_parameters_using_method(method)
+        self._set_parameters_using_method()
 
     def night_portions(self) -> NightPortions:
         if self.high_latitude_rule == HighLatitudeRule.MIDDLE_OF_THE_NIGHT:
@@ -61,7 +60,7 @@ class CalculationParameters:
 
         raise ValueError("Invalid high latitude rule")
 
-    def _set_parameters_using_method(self, calculation_method: CalculationMethod):
-        method_parameters = methods_parameters[calculation_method]
+    def _set_parameters_using_method(self) -> None:
+        method_parameters = methods_parameters[self.method]
         for key, value in method_parameters.items():
             setattr(self, key, value)
