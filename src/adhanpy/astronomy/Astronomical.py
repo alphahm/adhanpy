@@ -179,7 +179,7 @@ def corrected_hour_angle(
             * math.sin(math.radians(H))
         )
         Δm = term3 / term4
-    except:
+    except ValueError:
         return math.nan
 
     return (m + Δm) * 24
