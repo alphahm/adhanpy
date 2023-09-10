@@ -189,10 +189,8 @@ class PrayerTimes:
                     "asr",
                     temp_asr,
                 )
-        try:
-            self.asr.hour
-        except:
-            raise RuntimeError
+                return
+        raise RuntimeError
 
     def _set_maghrib(self):
         self.maghrib = self._rounded_minute(
@@ -212,7 +210,7 @@ class PrayerTimes:
             temp_isha = sunset + timedelta(
                 seconds=self.calculation_parameters.isha_interval * 60
             )
-        except:
+        except ValueError:
             timeComponents = TimeComponents.from_float(
                 self._solar_time.hour_angle(
                     -self.calculation_parameters.isha_angle, True

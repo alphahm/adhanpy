@@ -1,3 +1,4 @@
+import math
 import pytest
 import adhanpy.astronomy.Astronomical as Astronomical
 import adhanpy.util.FloatUtil as FloatUtil
@@ -103,7 +104,21 @@ def test_transit_and_hour_angle():
         )
         / 24
     )
+    invalid = Astronomical.corrected_hour_angle(
+        m0,
+        -36,
+        Coordinates(42.3333, longitude),
+        False,
+        Θ,
+        α2,
+        α1,
+        α3,
+        δ2,
+        δ1,
+        δ3,
+    )
     assert rise == pytest.approx(0.51766, abs=1e-5)
+    assert math.isnan(invalid)
 
 
 def test_interpolation():
