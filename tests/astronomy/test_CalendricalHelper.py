@@ -30,12 +30,12 @@ def test_julian_day(year, month, day, expected):
 def test_julian_day_with_hours_and_minutes():
     # Comparison values generated from http://aa.usno.navy.mil/data/docs/JulianDate.php
 
-    jdVal = 2457215.67708333
+    jd_val = 2457215.67708333
     assert CalendricalHelper.julian_day(2015, 7, 12, 4.25) == pytest.approx(
-        jdVal, abs=1e-6
+        jd_val, abs=1e-6
     )
     assert CalendricalHelper.julian_day(2015, 7, 12, 4, 15) == pytest.approx(
-        jdVal, abs=1e-6
+        jd_val, abs=1e-6
     )
     assert CalendricalHelper.julian_day(2015, 7, 12, 8.0) == pytest.approx(
         2457215.833333, abs=1e-6
