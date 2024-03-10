@@ -16,26 +16,31 @@ from adhanpy.util.FloatUtil import unwind_angle
 
 class SolarCoordinates:
     def __init__(self, julian_day) -> None:
-        T = julian_century(julian_day)
-        L0 = mean_solar_longitude(T)
-        Lp = mean_lunar_longitude(T)
-        Ω = ascending_lunar_node_longitude(T)
-        λ = math.radians(apparent_solar_longitude(T, L0))
-        θ0 = mean_sidereal_time(T)
-        ΔΨ = nutation_in_longitude(L0, Lp, Ω)
-        Δε = nutation_in_obliquity(L0, Lp, Ω)
-        ε0 = mean_obliquity_of_the_ecliptic(T)
-        εapp = math.radians(apparent_obliquity_of_the_ecliptic(T, ε0))
+        jc = julian_century(julian_day)
+        mean_solar_long = mean_solar_longitude(jc)
+        mean_lunar_long = mean_lunar_longitude(jc)
+        omega = ascending_lunar_node_longitude(jc)
+        iota = math.radians(apparent_solar_longitude(jc, mean_solar_long))
+        theta0 = mean_sidereal_time(jc)
+        delta_psi = nutation_in_longitude(mean_solar_long, mean_lunar_long, omega)
+        delta_epsilon = nutation_in_obliquity(mean_solar_long, mean_lunar_long, omega)
+        epsilon0 = mean_obliquity_of_the_ecliptic(jc)
+        epsilon_app = math.radians(apparent_obliquity_of_the_ecliptic(jc, epsilon0))
 
         # Equation from Astronomical Algorithms page 165
-        self.declination = math.degrees(math.asin(math.sin(εapp) * math.sin(λ)))
+        self.declination = math.degrees(
+            math.asin(math.sin(epsilon_app) * math.sin(iota))
+        )
 
         # Equation from Astronomical Algorithms page 165
         self.right_ascension = unwind_angle(
-            math.degrees(math.atan2(math.cos(εapp) * math.sin(λ), math.cos(λ)))
+            math.degrees(
+                math.atan2(math.cos(epsilon_app) * math.sin(iota), math.cos(iota))
+            )
         )
 
         # Equation from Astronomical Algorithms page 88
-        self.apparent_sidereal_time = θ0 + (
-            ((ΔΨ * 3600) * math.cos(math.radians(ε0 + Δε))) / 3600
+        self.apparent_sidereal_time = theta0 + (
+            ((delta_psi * 3600) * math.cos(math.radians(epsilon0 + delta_epsilon)))
+            / 3600
         )
