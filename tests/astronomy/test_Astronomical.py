@@ -13,18 +13,18 @@ def test_solar_coordinates():
     solar = SolarCoordinates(jd)
     t = CalendricalHelper.julian_century(jd)
 
-    l_0 = Astronomical.mean_solar_longitude(t)
-    epsilon_0 = Astronomical.mean_obliquity_of_the_ecliptic(t)
-    epsilon_app = Astronomical.apparent_obliquity_of_the_ecliptic(t, epsilon_0)
+    l0 = Astronomical.mean_solar_longitude(t)
+    epsilon0 = Astronomical.mean_obliquity_of_the_ecliptic(t)
+    epsilon_app = Astronomical.apparent_obliquity_of_the_ecliptic(t, epsilon0)
     m = Astronomical.mean_solar_anomaly(t)
     c = Astronomical.solar_equation_of_the_center(t, m)
-    iota = Astronomical.apparent_solar_longitude(t, l_0)
+    iota = Astronomical.apparent_solar_longitude(t, l0)
     delta = solar.declination
     alpha = FloatUtil.unwind_angle(solar.right_ascension)
 
     assert t == pytest.approx(-0.072183436, abs=1e-11)
-    assert l_0 == pytest.approx(201.80720, abs=1e-5)
-    assert epsilon_0 == pytest.approx(23.44023, abs=1e-5)
+    assert l0 == pytest.approx(201.80720, abs=1e-5)
+    assert epsilon0 == pytest.approx(23.44023, abs=1e-5)
     assert epsilon_app == pytest.approx(23.43999, abs=1e-5)
     assert m == pytest.approx(278.99397, abs=1e-5)
     assert c == pytest.approx(-1.89732, abs=1e-5)
@@ -39,24 +39,24 @@ def test_solar_coordinates():
     solar = SolarCoordinates(jd)
     t = CalendricalHelper.julian_century(jd)
 
-    theta_0 = Astronomical.mean_sidereal_time(t)
+    theta0 = Astronomical.mean_sidereal_time(t)
     theta_app = solar.apparent_sidereal_time
     omega = Astronomical.ascending_lunar_node_longitude(t)
-    epsilon_0 = Astronomical.mean_obliquity_of_the_ecliptic(t)
-    l_0 = Astronomical.mean_solar_longitude(t)
+    epsilon0 = Astronomical.mean_obliquity_of_the_ecliptic(t)
+    l0 = Astronomical.mean_solar_longitude(t)
     lp = Astronomical.mean_lunar_longitude(t)
-    delta_psi = Astronomical.nutation_in_longitude(l_0, lp, omega)
-    delta_epsilon = Astronomical.nutation_in_obliquity(l_0, lp, omega)
-    epsilon = epsilon_0 + delta_epsilon
+    delta_psi = Astronomical.nutation_in_longitude(l0, lp, omega)
+    delta_epsilon = Astronomical.nutation_in_obliquity(l0, lp, omega)
+    epsilon = epsilon0 + delta_epsilon
 
-    assert theta_0 == pytest.approx(197.693195, abs=1e-6)
+    assert theta0 == pytest.approx(197.693195, abs=1e-6)
     assert theta_app == pytest.approx(197.6922295833, abs=1e-4)
 
     # values from Astronomical Algorithms page 148
     assert omega == pytest.approx(11.2531, abs=1e-4)
     assert delta_psi == pytest.approx(-0.0010522, abs=1e-4)
     assert delta_epsilon == pytest.approx(0.0026230556, abs=1e-5)
-    assert epsilon_0 == pytest.approx(23.4409463889, abs=1e-6)
+    assert epsilon0 == pytest.approx(23.4409463889, abs=1e-6)
     assert epsilon == pytest.approx(23.4435694444, abs=1e-5)
 
 
@@ -72,20 +72,20 @@ def test_transit_and_hour_angle():
     # alues from Astronomical Algorithms page 103
     longitude = -71.0833
     theta = 177.74208
-    alpha_1 = 40.68021
-    alpha_2 = 41.73129
-    alpha_3 = 42.78204
-    m0 = Astronomical.approximate_transit(longitude, theta, alpha_2)
+    alpha1 = 40.68021
+    alpha2 = 41.73129
+    alpha3 = 42.78204
+    m0 = Astronomical.approximate_transit(longitude, theta, alpha2)
 
     assert m0 == pytest.approx(0.81965, abs=1e-5)
 
-    transit = Astronomical.corrected_transit(m0, longitude, theta, alpha_2, alpha_1, alpha_3) / 24
+    transit = Astronomical.corrected_transit(m0, longitude, theta, alpha2, alpha1, alpha3) / 24
 
     assert transit == pytest.approx(0.81980, abs=1e-5)
 
-    delta_1 = 18.04761
-    delta_2 = 18.44092
-    delta_3 = 18.82742
+    delta1 = 18.04761
+    delta2 = 18.44092
+    delta3 = 18.82742
 
     rise = (
         Astronomical.corrected_hour_angle(
@@ -94,12 +94,12 @@ def test_transit_and_hour_angle():
             Coordinates(42.3333, longitude),
             False,
             theta,
-            alpha_2,
-            alpha_1,
-            alpha_3,
-            delta_2,
-            delta_1,
-            delta_3,
+            alpha2,
+            alpha1,
+            alpha3,
+            delta2,
+            delta1,
+            delta3,
         )
         / 24
     )

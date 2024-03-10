@@ -21,11 +21,11 @@ class SolarCoordinates:
         mean_lunar_long = mean_lunar_longitude(jc)
         omega = ascending_lunar_node_longitude(jc)
         iota = math.radians(apparent_solar_longitude(jc, mean_solar_long))
-        theta_0 = mean_sidereal_time(jc)
+        theta0 = mean_sidereal_time(jc)
         delta_psi = nutation_in_longitude(mean_solar_long, mean_lunar_long, omega)
         delta_epsilon = nutation_in_obliquity(mean_solar_long, mean_lunar_long, omega)
-        epsilon_0 = mean_obliquity_of_the_ecliptic(jc)
-        epsilon_app = math.radians(apparent_obliquity_of_the_ecliptic(jc, epsilon_0))
+        epsilon0 = mean_obliquity_of_the_ecliptic(jc)
+        epsilon_app = math.radians(apparent_obliquity_of_the_ecliptic(jc, epsilon0))
 
         # Equation from Astronomical Algorithms page 165
         self.declination = math.degrees(
@@ -40,7 +40,7 @@ class SolarCoordinates:
         )
 
         # Equation from Astronomical Algorithms page 88
-        self.apparent_sidereal_time = theta_0 + (
-            ((delta_psi * 3600) * math.cos(math.radians(epsilon_0 + delta_epsilon)))
+        self.apparent_sidereal_time = theta0 + (
+            ((delta_psi * 3600) * math.cos(math.radians(epsilon0 + delta_epsilon)))
             / 3600
         )
