@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 from zoneinfo import ZoneInfo
-from typing import Tuple
 from adhanpy.calculation.CalculationMethod import CalculationMethod
 from adhanpy.calculation.CalculationParameters import CalculationParameters
 from adhanpy.calculation.Twilight import (
@@ -18,11 +18,11 @@ from adhanpy.util.CalendarUtil import rounded_minute
 class PrayerTimes:
     def __init__(
         self,
-        coordinates: Tuple[float, float],
+        coordinates: tuple[float, float],
         date: datetime,
-        calculation_method: CalculationMethod = None,
-        calculation_parameters: CalculationParameters = None,
-        time_zone: ZoneInfo = None,
+        calculation_method: Optional[CalculationMethod] = None,
+        calculation_parameters: Optional[CalculationParameters] = None,
+        time_zone: Optional[ZoneInfo] = None,
     ):
         """
         Arguments:

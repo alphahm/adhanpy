@@ -1,8 +1,9 @@
+from typing import Any
+
 from adhanpy.calculation.CalculationMethod import CalculationMethod
 from adhanpy.calculation.PrayerAdjustments import PrayerAdjustments
 
-
-methods_parameters = {
+METHODS_PARAMETERS: dict[CalculationMethod, dict[str, Any]] = {
     CalculationMethod.NONE: {},
     CalculationMethod.MUSLIM_WORLD_LEAGUE: {
         "fajr_angle": 18.0,

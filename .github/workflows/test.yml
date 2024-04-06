@@ -24,6 +24,9 @@ jobs:
       - name: lint
         run: |
           black --check src/
+      - name: mypy
+        run: |
+          mypy src
       - name: Test with pytest
         run: |
           pytest
