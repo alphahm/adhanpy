@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Any, Optional
 from adhanpy.calculation.CalculationMethod import CalculationMethod
-from adhanpy.calculation.MethodsParameters import methods_parameters
+from adhanpy.calculation.MethodsParameters import METHODS_PARAMETERS
 from adhanpy.calculation.Madhab import Madhab
 from adhanpy.calculation.HighLatitudeRule import HighLatitudeRule
 from adhanpy.calculation.PrayerAdjustments import PrayerAdjustments
@@ -62,6 +62,6 @@ class CalculationParameters:
         raise ValueError("Invalid high latitude rule")
 
     def _set_parameters_using_method(self) -> None:
-        method_parameters = methods_parameters[self.method]
+        method_parameters = METHODS_PARAMETERS[self.method]
         for key, value in method_parameters.items():
             setattr(self, key, value)
